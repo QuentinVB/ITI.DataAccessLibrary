@@ -18,7 +18,6 @@ namespace ITI.DataAccessLibrary.Tests
         readonly string _path;
         readonly string _fileName = "database.sqlite";
         readonly string _dbPath;
-        SQLiteConnection _connexion;
         Random _randomSource;
 
         List<Harbor> _harbors;
@@ -38,15 +37,17 @@ namespace ITI.DataAccessLibrary.Tests
         public void CreateDatabase()
         {
             if (File.Exists(_dbPath)) File.Delete(_dbPath);
-
             SQLiteConnection.CreateFile(_dbPath);
-            _connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;");
 
-            _connexion.Open();
+            using(SQLiteConnection connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
+            {
+                connexion.Open();
+                CreateHarbourTable(connexion);
+                connexion.Close();
+            }
 
-            CreateHarbourTable();
 
-            _connexion.Close();
+            
 
             //create based on mondel
 
@@ -59,49 +60,50 @@ namespace ITI.DataAccessLibrary.Tests
             }*/
 
         }
-        void Execute(string query)
-        {
-            {
-                SQLiteCommand commande = new SQLiteCommand(query, _connexion);
-                commande.ExecuteNonQuery();
-            }
-        }
 
-        void CreateHarbourTable(int count = 100)
+        void CreateHarbourTable(SQLiteConnection connexion,int count = 100)
         {
-            Execute("create table Harbor " +
-                "(" +
-                "Id INTEGER PRIMARY KEY," +
-                "Name text," +
-                "LocalName text, " +
-                "Country text, " +
-                "Latitude real," +
-                "Longitude real" +
-                ")");
 
-            Harbor harbor;
-            for (int i = 0; i <= count; i++)
+            using (SQLiteTransaction transation = connexion.BeginTransaction())
             {
-                harbor = new Harbor()
+                using (SQLiteCommand command = connexion.CreateCommand())
                 {
-                    Name = GetRandomName(),
-                    LocalName = GetRandomName(),
-                    Country = GetRandomName(),
-                    Latitude = (_randomSource.NextDouble()*180 ) -90,
-                    Longitude = (_randomSource.NextDouble() * 180) - 90
-                };
-                Harbors.Add(harbor);
-                Execute("insert into Harbor(Name, LocalName,Country,Longitude,Latitude) values(" +
-                    $"'{harbor.Name}', " +
-                    $"'{harbor.LocalName}'," +
-                    $"'{harbor.Country}'," +
-                    $"{harbor.Latitude.ToString(CultureInfo.InvariantCulture)}, " +
-                    $"{harbor.Longitude.ToString(CultureInfo.InvariantCulture)}" +
-                    ")"
-                    );
-            }
+                    command.CommandText = "create table Harbor " +
+                                    "(" +
+                                        "Id INTEGER PRIMARY KEY," +
+                                        "Name text," +
+                                        "LocalName text, " +
+                                        "Country text, " +
+                                        "Latitude real," +
+                                        "Longitude real" +
+                                    ")";
+                    command.ExecuteNonQuery();
+                    Harbor harbor;
+                    for (int i = 0; i <= count; i++)
+                    {
+                        harbor = new Harbor()
+                        {
+                            Name = GetRandomName(),
+                            LocalName = GetRandomName(),
+                            Country = GetRandomName(),
+                            Latitude = (_randomSource.NextDouble() * 180) - 90,
+                            Longitude = (_randomSource.NextDouble() * 180) - 90
+                        };
 
-            //Execute("insert into ships(name, mass) values('VFRZ', 100)");
+                        Harbors.Add(harbor);
+
+                        command.CommandText ="insert into Harbor(Name, LocalName,Country,Longitude,Latitude) values(" +
+                            $"'{harbor.Name}', " +
+                            $"'{harbor.LocalName}'," +
+                            $"'{harbor.Country}'," +
+                            $"{harbor.Latitude.ToString(CultureInfo.InvariantCulture)}, " +
+                            $"{harbor.Longitude.ToString(CultureInfo.InvariantCulture)}" +
+                            ")";
+                        command.ExecuteNonQuery();
+                    }
+                }
+                transation.Commit();
+            }
         }
 
         string GetRandomName()
