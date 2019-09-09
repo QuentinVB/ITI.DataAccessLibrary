@@ -18,7 +18,6 @@ namespace ITI.DataAccessLibrary.DebugCLI
             string _path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
             string _fileName = "database.sqlite";
             string _dbPath = $"{_path}{_fileName}";
-            Console.WriteLine(_path);
 
             SQLiteConnection.CreateFile(_dbPath);
 
