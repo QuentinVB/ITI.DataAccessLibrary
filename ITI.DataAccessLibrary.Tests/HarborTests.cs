@@ -9,7 +9,6 @@ namespace ITI.DataAccessLibrary.Tests
         public void Setup()
         {
             generator = new DBGenerator();
-
         }
 
         [Test]
