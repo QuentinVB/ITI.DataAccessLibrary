@@ -18,7 +18,6 @@ namespace ITI.DataAccessLibrary.Tests
         readonly string _path;
         readonly string _fileName = "database.sqlite";
         readonly string _dbPath;
-        SQLiteConnection _connexion;
         Random _randomSource;
 
         List<Harbor> _harbors;
@@ -27,7 +26,6 @@ namespace ITI.DataAccessLibrary.Tests
 
         public DBGenerator()
         {
-
             //_path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
             _path = Environment.CurrentDirectory.ToString();
             _dbPath = $"{_path}\\{_fileName}";
@@ -37,86 +35,76 @@ namespace ITI.DataAccessLibrary.Tests
 
         public void CreateDatabase()
         {
-            if (File.Exists(_dbPath)) File.Delete(_dbPath);
+            //clean actual data
+            if(File.Exists(_dbPath)) File.Delete(_dbPath);            
+            _harbors.Clear();
 
+            //regenerate the data
             SQLiteConnection.CreateFile(_dbPath);
-            _connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;");
 
-            _connexion.Open();
-
-            CreateHarbourTable();
-
-            _connexion.Close();
-
-            //create based on mondel
-
-            //List<Type> types = GetClasses("ITI.DataAccessLibrary.Model").ToList();
-
-            /*foreach (var type in types)
+            using (SQLiteConnection connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
             {
-                //var instance = type.IsInstanceOfType();
-                type.GetType().GetProperties();
-            }*/
-
-        }
-        void Execute(string query)
-        {
-            {
-                SQLiteCommand commande = new SQLiteCommand(query, _connexion);
-                commande.ExecuteNonQuery();
+                connexion.Open();
+                CreateHarbourTable(connexion);
+                connexion.Close();
             }
+
+
+            
+
+           
         }
 
-        void CreateHarbourTable(int count = 100)
+        void CreateHarbourTable(SQLiteConnection connexion,int count = 100)
         {
-            Execute("create table Harbor " +
-                "(" +
-                "Id INTEGER PRIMARY KEY," +
-                "Name text," +
-                "LocalName text, " +
-                "Country text, " +
-                "Latitude real," +
-                "Longitude real" +
-                ")");
-
-            Harbor harbor;
-            for (int i = 0; i <= count; i++)
+            using (SQLiteTransaction transaction = connexion.BeginTransaction())
             {
-                harbor = new Harbor()
+                using (SQLiteCommand command = connexion.CreateCommand())
                 {
-                    Name = GetRandomName(),
-                    LocalName = GetRandomName(),
-                    Country = GetRandomName(),
-                    Latitude = (_randomSource.NextDouble()*180 ) -90,
-                    Longitude = (_randomSource.NextDouble() * 180) - 90
-                };
-                Harbors.Add(harbor);
-                Execute("insert into Harbor(Name, LocalName,Country,Longitude,Latitude) values(" +
-                    $"'{harbor.Name}', " +
-                    $"'{harbor.LocalName}'," +
-                    $"'{harbor.Country}'," +
-                    $"{harbor.Latitude.ToString(CultureInfo.InvariantCulture)}, " +
-                    $"{harbor.Longitude.ToString(CultureInfo.InvariantCulture)}" +
-                    ")"
-                    );
-            }
+                    command.CommandText = "create table Harbor " +
+                                    "(" +
+                                        "Id INTEGER PRIMARY KEY," +
+                                        "Name text," +
+                                        "LocalName text, " +
+                                        "Country text, " +
+                                        "Latitude real," +
+                                        "Longitude real" +
+                                    ")";
+                    command.ExecuteNonQuery();
 
-            //Execute("insert into ships(name, mass) values('VFRZ', 100)");
+                    Harbor harbor;
+                    for (int i = 0; i <= count; i++)
+                    {
+                        harbor = new Harbor()
+                        {
+                            Name = GetRandomName(),
+                            LocalName = GetRandomName(),
+                            Country = GetRandomName(),
+                            Latitude = (_randomSource.NextDouble() * 180) - 90,
+                            Longitude = (_randomSource.NextDouble() * 180) - 90
+                        };
+
+                        Harbors.Add(harbor);
+
+                        command.CommandText ="insert into Harbor(Name, LocalName,Country,Longitude,Latitude) values(" +
+                            $"'{harbor.Name}', " +
+                            $"'{harbor.LocalName}'," +
+                            $"'{harbor.Country}'," +
+                            $"{harbor.Latitude.ToString(CultureInfo.InvariantCulture)}, " +
+                            $"{harbor.Longitude.ToString(CultureInfo.InvariantCulture)}" +
+                            ")";
+                        command.ExecuteNonQuery();
+                    }
+                }
+                transaction.Commit();
+            }
         }
 
         string GetRandomName()
         {
+            //todo : generate real names instead of guid
             return Guid.NewGuid().ToString();
         }
 
-        //Quentin's cave
-        /*
-        static IEnumerable<Type> GetClasses(string nameSpace)
-        {
-            Assembly asm = Assembly.GetExecutingAssembly();
-            return asm.GetTypes()
-                .Where(type => type.Namespace == nameSpace)
-                .Select(type => type);
-        }*/
     }
 }

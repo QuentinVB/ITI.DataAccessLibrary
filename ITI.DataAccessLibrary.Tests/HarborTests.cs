@@ -1,4 +1,8 @@
+using ITI.DataAccessLibrary.Correction;
+using ITI.DataAccessLibrary.Model;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -12,11 +16,19 @@ namespace ITI.DataAccessLibrary.Tests
         }
 
         [Test]
-        public void Test1()
+        public void t1_getAllHarbors()
         {
+            //Arrange
             generator.CreateDatabase();
-            Assert.Pass();
-        }
+            HarborQueries sut = new HarborQueries();
+
+            //Act
+            List<Harbor> data = sut.GetAllHarbor();
+
+            //Assert
+            Assert.AreEqual(generator.Harbors.Count, data.Count);
+            Assert.True(!generator.Harbors.Except(data).Any());
+        }       
     }
 }
 
