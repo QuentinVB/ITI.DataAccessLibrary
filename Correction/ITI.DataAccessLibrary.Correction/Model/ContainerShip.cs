@@ -8,7 +8,8 @@ namespace ITI.DataAccessLibrary.Correction.Model
 {
     public class ContainerShip
     {
-        public int ATISCode { get; set; }
+        public int Id { get; set; }
+        public string ATISCode { get; set; }
         public string Name { get; set; }
         public Harbor Destination { get; set; }
         public Harbor Origin { get; set; }
@@ -20,6 +21,6 @@ namespace ITI.DataAccessLibrary.Correction.Model
         public int MaxWidth { get; set; }
         public int MaxLength { get; set; }
         public int MaxHeight { get; set; }
-        public int MaxSpeed { get; set; }
+        public double MaxSpeed { get; set; }
     }
 }

@@ -27,7 +27,24 @@ namespace ITI.DataAccessLibrary.Tests
 
             //Assert
             Assert.AreEqual(generator.Harbors.Count, data.Count);
-            Assert.True(!generator.Harbors.Except(data).Any());
+
+            generator.Harbors.Sort((x, y) =>
+            {
+                return y.Id.CompareTo(x.Id);
+            });
+            data.Sort((x, y) =>
+            {
+                return y.Id.CompareTo(x.Id);
+            });
+
+            for (int i = 0; i < generator.Harbors.Count; i++)
+            {
+                Assert.AreEqual(generator.Harbors[i].Name, data[i].Name);
+                Assert.AreEqual(generator.Harbors[i].Country, data[i].Country);
+                Assert.That(generator.Harbors[i].Latitude, Is.EqualTo(data[i].Latitude).Within(0.00001));
+                Assert.That(generator.Harbors[i].Longitude, Is.EqualTo(data[i].Longitude).Within(0.00001));
+            }
+
         }       
     }
 }
