@@ -28,7 +28,6 @@ namespace ITI.DataAccessLibrary.Correction
             string query = "INSERT INTO HARBOR VALUES(" +
                 $"{harbor.Id}, " +
                 $"{harbor.Name}, " +
-                $"{harbor.LocalName}, " +
                 $"{harbor.Country}, " +
                 $"{harbor.Latitude}, " +
                 $"{harbor.Longitude}, " +
