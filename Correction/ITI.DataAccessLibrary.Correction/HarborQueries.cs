@@ -28,16 +28,15 @@ namespace ITI.DataAccessLibrary.Correction
                         {
                             int id = reader.GetInt32(0);
                             string name = reader.GetString(1);
-                            string country = reader.GetString(3);
-                            double longi = reader.GetDouble(4);
-                            double lati = reader.GetDouble(5);
-                            
+                            string country = reader.GetString(2);
+                            double lati = reader.GetDouble(3);
+                            double longi = reader.GetDouble(4);                           
 
                             Harbor h = new Harbor();
                             h.Country = country;
                             h.Id = id;
-                            h.Longitude = longi;
                             h.Latitude = lati;
+                            h.Longitude = longi;
                             h.Name = name;
 
                             result.Add(h);

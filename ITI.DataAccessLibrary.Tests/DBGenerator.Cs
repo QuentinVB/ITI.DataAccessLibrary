@@ -35,7 +35,7 @@ namespace ITI.DataAccessLibrary.Tests
             _harbors = new List<Harbor>();
         }
 
-        public void CreateDatabase()
+        public void CreateDatabase(int amount=100)
         {
             //clean actual data
             if(File.Exists(_dbPath)) File.Delete(_dbPath);            
@@ -47,13 +47,13 @@ namespace ITI.DataAccessLibrary.Tests
             using (SQLiteConnection connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
             {
                 connexion.Open();
-                CreateHarbourTable(connexion);
-                //CreateShipTable(connexion);
+                CreateHarbourTable(connexion, amount);
+                //CreateShipTable(connexion,amount);
                 connexion.Close();
             }    
         }
 
-        void CreateHarbourTable(SQLiteConnection connexion,int count = 100)
+        void CreateHarbourTable(SQLiteConnection connexion,int count)
         {
             using (SQLiteTransaction transaction = connexion.BeginTransaction())
             {
@@ -72,7 +72,7 @@ namespace ITI.DataAccessLibrary.Tests
 
                     //generate harbors
                     Harbor harbor;
-                    for (int i = 1; i < count; i++)
+                    for (int i = 1; i <= count; i++)
                     {
                         harbor = new Harbor()
                         {
@@ -85,7 +85,9 @@ namespace ITI.DataAccessLibrary.Tests
 
                         Harbors.Add(harbor);
 
-                        command.CommandText ="insert into Harbor(Name, Country,Longitude,Latitude) values(" +
+                        command.CommandText = "insert into Harbor" +
+                            "(Name, Country,Latitude,Longitude) " +
+                            "values(" +
                             $"'{harbor.Name}', " +
                             $"'{harbor.Country}'," +
                             $"{harbor.Latitude.ToString(CultureInfo.InvariantCulture)}, " +
@@ -128,7 +130,7 @@ namespace ITI.DataAccessLibrary.Tests
 
                     //generate ships
                     ContainerShip containerShip;
-                    for (int i = 1; i < count; i++)
+                    for (int i = 1; i <= count; i++)
                     {
                         Harbor originHarbor = Harbors.Single(x=> x.Id == _randomSource.Next(1, _harbors.Count));
                         Harbor destinationHarbor = Harbors.Single(x=> x.Id == _randomSource.Next(1, _harbors.Count ) && x.Id != originHarbor.Id);
