@@ -26,7 +26,6 @@ namespace ITI.DataAccessLibrary.Tests
 
         public DBGenerator()
         {
-
             //_path = new FileInfo(Assembly.GetEntryAssembly().Location).Directory.ToString();
             _path = Environment.CurrentDirectory.ToString();
             _dbPath = $"{_path}\\{_fileName}";
@@ -36,10 +35,14 @@ namespace ITI.DataAccessLibrary.Tests
 
         public void CreateDatabase()
         {
-            if (File.Exists(_dbPath)) File.Delete(_dbPath);
+            //clean actual data
+            if(File.Exists(_dbPath)) File.Delete(_dbPath);            
+            _harbors.Clear();
+
+            //regenerate the data
             SQLiteConnection.CreateFile(_dbPath);
 
-            using(SQLiteConnection connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
+            using (SQLiteConnection connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
             {
                 connexion.Open();
                 CreateHarbourTable(connexion);
@@ -49,22 +52,12 @@ namespace ITI.DataAccessLibrary.Tests
 
             
 
-            //create based on mondel
-
-            //List<Type> types = GetClasses("ITI.DataAccessLibrary.Model").ToList();
-
-            /*foreach (var type in types)
-            {
-                //var instance = type.IsInstanceOfType();
-                type.GetType().GetProperties();
-            }*/
-
+           
         }
 
         void CreateHarbourTable(SQLiteConnection connexion,int count = 100)
         {
-
-            using (SQLiteTransaction transation = connexion.BeginTransaction())
+            using (SQLiteTransaction transaction = connexion.BeginTransaction())
             {
                 using (SQLiteCommand command = connexion.CreateCommand())
                 {
@@ -78,6 +71,7 @@ namespace ITI.DataAccessLibrary.Tests
                                         "Longitude real" +
                                     ")";
                     command.ExecuteNonQuery();
+
                     Harbor harbor;
                     for (int i = 0; i <= count; i++)
                     {
@@ -102,23 +96,15 @@ namespace ITI.DataAccessLibrary.Tests
                         command.ExecuteNonQuery();
                     }
                 }
-                transation.Commit();
+                transaction.Commit();
             }
         }
 
         string GetRandomName()
         {
+            //todo : generate real names instead of guid
             return Guid.NewGuid().ToString();
         }
 
-        //Quentin's cave
-        /*
-        static IEnumerable<Type> GetClasses(string nameSpace)
-        {
-            Assembly asm = Assembly.GetExecutingAssembly();
-            return asm.GetTypes()
-                .Where(type => type.Namespace == nameSpace)
-                .Select(type => type);
-        }*/
     }
 }
