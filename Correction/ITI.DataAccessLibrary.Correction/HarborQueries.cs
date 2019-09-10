@@ -11,7 +11,28 @@ namespace ITI.DataAccessLibrary.Correction
     {
         public List<Harbor> GetAllHarbor()
         {
-            throw new NotImplementedException();
+            string query = "SELECT * FROM HARBOR";
+
+            return null;
+        }
+
+        public List<Harbor> GetHarborByCountry()
+        {
+            string query = "SELECT COUNTRY, NAME FROM HARBOUR ORDER BY COUNTRY";
+
+            return null;
+        }
+
+        public void InsertHarbor( Harbor harbor )
+        {
+            string query = "INSERT INTO HARBOR VALUES(" +
+                $"{harbor.Id}, " +
+                $"{harbor.Name}, " +
+                $"{harbor.LocalName}, " +
+                $"{harbor.Country}, " +
+                $"{harbor.Latitude}, " +
+                $"{harbor.Longitude}, " +
+                ")";
         }
     }
 }
