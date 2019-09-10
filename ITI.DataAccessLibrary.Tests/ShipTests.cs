@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ITI.DataAccessLibrary.Tests
 {
-    public class T1_HarborTests
+    public class T2_ShipTests
     {
         DBGenerator generator;
         [SetUp]
@@ -16,19 +16,19 @@ namespace ITI.DataAccessLibrary.Tests
         }
 
         [Test]
-        public void t1_getAllHarbors()
+        public void t1_getAllShips()
         {
             //Arrange
             generator.CreateDatabase();
-            HarborQueries sut = new HarborQueries();
+            ShipQueries sut = new ShipQueries();
 
             //Act
-            List<Harbor> data = sut.GetAllHarbor();
+            List<ContainerShip> data = sut.GetAllShip();
 
             //Assert
-            Assert.AreEqual(generator.Harbors.Count, data.Count);
+            Assert.AreEqual(generator.ContainerShips.Count, data.Count);
 
-            generator.Harbors.Sort((x, y) =>
+            generator.ContainerShips.Sort((x, y) =>
             {
                 return y.Id.CompareTo(x.Id);
             });
@@ -37,12 +37,9 @@ namespace ITI.DataAccessLibrary.Tests
                 return y.Id.CompareTo(x.Id);
             });
 
-            for (int i = 0; i < generator.Harbors.Count; i++)
+            for (int i = 0; i < generator.ContainerShips.Count; i++)
             {
                 Assert.AreEqual(generator.Harbors[i].Name, data[i].Name);
-                Assert.AreEqual(generator.Harbors[i].Country, data[i].Country);
-                Assert.That(generator.Harbors[i].Latitude, Is.EqualTo(data[i].Latitude).Within(0.00001));
-                Assert.That(generator.Harbors[i].Longitude, Is.EqualTo(data[i].Longitude).Within(0.00001));
             }
 
         }       
