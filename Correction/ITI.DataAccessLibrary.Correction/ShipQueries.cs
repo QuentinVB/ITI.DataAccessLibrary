@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ITI.DataAccessLibrary.Model;
+using ITI.DataAccessLibrary.Correction.Model;
 
 namespace ITI.DataAccessLibrary.Correction
 {

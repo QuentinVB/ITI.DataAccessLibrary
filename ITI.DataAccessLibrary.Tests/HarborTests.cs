@@ -1,5 +1,5 @@
 using ITI.DataAccessLibrary.Correction;
-using ITI.DataAccessLibrary.Model;
+using ITI.DataAccessLibrary.Correction.Model;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
