@@ -54,8 +54,11 @@ namespace ITI.DataAccessLibrary.Correction
         {
             string query = "SELECT COUNTRY, NAME FROM HARBOUR ORDER BY COUNTRY";
 
+            List<Harbor> result = new List<Harbor>();
+
             using (_connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
             {
+                _connexion.Open();
                 using (SQLiteCommand command = _connexion.CreateCommand())
                 {
                     command.CommandText = query;
@@ -63,12 +66,20 @@ namespace ITI.DataAccessLibrary.Correction
                     {
                         while (reader.Read())
                         {
+                            string country = reader.GetString(0);
+                            string name = reader.GetString(1);
 
+                            Harbor h = new Harbor();
+                            h.Country = country;
+                            h.Name = name;
+
+                            result.Add(h);
                         }
                     }
                 }
+                _connexion.Close();
             }
-                return null;
+                return result;
         }
 
         public void InsertHarbor( Harbor harbor )
@@ -80,6 +91,21 @@ namespace ITI.DataAccessLibrary.Correction
                 $"{harbor.Latitude}, " +
                 $"{harbor.Longitude}, " +
                 ")";
+
+            using (_connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
+            {
+                _connexion.Open();
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
     }
 }
