@@ -39,7 +39,7 @@ namespace ITI.DataAccessLibrary.Tests
             _containers = new List<Container>();
         }
 
-        public void CreateDatabase(int amount=100)
+        public void CreateDatabase()
         {
             //clean actual data
             if(File.Exists(_dbPath)) File.Delete(_dbPath);            
@@ -51,14 +51,14 @@ namespace ITI.DataAccessLibrary.Tests
             using (SQLiteConnection connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
             {
                 connexion.Open();
-                CreateHarbourTable(connexion, amount);
-                CreateShipTable(connexion,amount);
-                CreateContainerTable(connexion, amount*10);
+                CreateHarbourTable(connexion);
+                CreateShipTable(connexion);
+                CreateContainerTable(connexion);
                 connexion.Close();
             }    
         }
 
-        void CreateHarbourTable(SQLiteConnection connexion,int count)
+        void CreateHarbourTable(SQLiteConnection connexion,int count=30)
         {
             using (SQLiteTransaction transaction = connexion.BeginTransaction())
             {
@@ -105,7 +105,7 @@ namespace ITI.DataAccessLibrary.Tests
             }
         }
 
-        void CreateShipTable(SQLiteConnection connexion, int count = 100)
+        void CreateShipTable(SQLiteConnection connexion, int count = 60)
         {
             if (Harbors.Count < 1) throw new InvalidOperationException();
 
@@ -119,19 +119,18 @@ namespace ITI.DataAccessLibrary.Tests
                                         "Id INTEGER PRIMARY KEY," +
                                         "Name text," +
                                         "ATISCode text," +
-                                        "DepartureTime text," +
-                                        "ArrivalTime text," +
                                         "Origin int," +
                                         "Destination int," +
+                                        "DepartureTime text," +
+                                        "ArrivalTime text," +
                                         "Crew int," +
-                                        "MaxWeight int," +
+                                        "MaxWeight int,"+
+                                        "MaxSpeed real," +
                                         "MaxWidth int," +
-                                        "MaxLength int," +
-                                        "MaxHeight int," +
-                                        "MaxSpeed real" +
+                                        "MaxHeight int,"+
+                                        "MaxLength int"+                                       
                                     ")";
                     command.ExecuteNonQuery();
-
 
                     //generate ships
                     ContainerShip containerShip;
@@ -148,17 +147,18 @@ namespace ITI.DataAccessLibrary.Tests
                         containerShip = new ContainerShip()
                         {
                             Id= i,
-                            Name = GetRandomName(),
                             ATISCode = Guid.NewGuid().ToString(),
-                            Destination = destinationHarbor,
+                            Name = GetRandomName(),
                             Origin = originHarbor,
+                            Destination = destinationHarbor,
                             DepartureTime = departure,
                             ArrivalTime = departure.AddDays(_randomSource.Next(15, 35)),
                             Crew = _randomSource.Next(1,20),
+                            MaxSpeed = _randomSource.NextDouble() * 10,
                             MaxWidth = _randomSource.Next(6,19),
-                            MaxLength = _randomSource.Next(10, 24),
                             MaxHeight = _randomSource.Next(6, 10),
-                            MaxSpeed = _randomSource.NextDouble()*10,
+                            MaxLength = _randomSource.Next(10, 24)
+
                         };
                         containerShip.MaxWeight = (int)(containerShip.MaxWidth * containerShip.MaxHeight * containerShip.MaxLength * _randomSource.NextDouble() * 10);
 
@@ -166,19 +166,19 @@ namespace ITI.DataAccessLibrary.Tests
 
                         ContainerShips.Add(containerShip);
 
-                        command.CommandText = "insert into Ship(ATISCode, Name,Destination,Origin,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxWidth,MaxLength,MaxHeight,MaxSpeed) values(" +
+                        command.CommandText = "insert into Ship(ATISCode, Name,Origin,Destination,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxSpeed,MaxWidth,MaxHeight,MaxLength) values(" +
                             $"'{containerShip.ATISCode}', " +
                             $"'{containerShip.Name}', " +
-                            $"{containerShip.Destination.Id}, " +
                             $"{containerShip.Origin.Id}, " +
+                            $"{containerShip.Destination.Id}, " +
                             $"'{containerShip.DepartureTime.ToString("yyyy-MM-dd HH:mm:ss.fff")}'," +
                             $"'{containerShip.ArrivalTime.ToString("yyyy-MM-dd HH:mm:ss.fff")}'," +
                             $"{containerShip.Crew}, " +
                             $"{containerShip.MaxWeight}, " +
+                            $"{containerShip.MaxSpeed.ToString(CultureInfo.InvariantCulture)}," +
                             $"{containerShip.MaxWidth}, " +
-                            $"{containerShip.MaxLength}, " +
                             $"{containerShip.MaxHeight}, " +
-                            $"{containerShip.MaxSpeed.ToString(CultureInfo.InvariantCulture)}" +
+                            $"{containerShip.MaxLength} " +
                             ")";
                         command.ExecuteNonQuery();
                     }
@@ -186,7 +186,7 @@ namespace ITI.DataAccessLibrary.Tests
                 transaction.Commit();
             }
         }
-        void CreateContainerTable(SQLiteConnection connexion, int count = 100)
+        void CreateContainerTable(SQLiteConnection connexion, int count = 1000)
         {
             if (Harbors.Count < 1 || ContainerShips.Count < 1) throw new InvalidOperationException();
 
@@ -204,8 +204,8 @@ namespace ITI.DataAccessLibrary.Tests
                                         "Origin int," +
                                         "Destination int," +
                                         "IsOpenTop int," +
-                                        "EmptyMass int," +
-                                        "MaxMass int," +
+                                        "EmptyWeigth int," +
+                                        "MaxWeigth int," +
                                         "X int," +
                                         "Y int," +
                                         "Z int" +
@@ -229,29 +229,29 @@ namespace ITI.DataAccessLibrary.Tests
                             CurrentShip=currentShip,
                             Origin = currentShip.Origin,
                             Destination = currentShip.Destination,
-                            IsOpenTop = _randomSource.Next(0, 1)>0 ,
-                            EmptyMass = _randomSource.Next(10,30),
-                            X = _randomSource.Next(10, 24),
-                            Y = _randomSource.Next(6, 10),
-                            Z = _randomSource.Next(6, 10),
+                            IsOpenTop = _randomSource.NextDouble()>0.5 ,
+                            EmptyWeigth = _randomSource.Next(10,30),
+                            X = _randomSource.Next(0, currentShip.MaxWidth),
+                            Y = _randomSource.Next(0, currentShip.MaxHeight),
+                            Z = _randomSource.Next(0, currentShip.MaxLength),
                         };
-                        container.MaxMass = (int)(container.EmptyMass + _randomSource.NextDouble() * 100);
+                        container.MaxWeigth = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
 
-
-                        //date : "yyyy-MM-dd HH:mm:ss.fff"
+                        //TODO : Be consistent and store the container at realplace on ships (not randomly)
 
                         Containers.Add(container);
 
+                        //insert to DB
                         command.CommandText = "insert into " +
-                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyMass,MaxMass,X,Y,Z) values(" +
+                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,MaxWeigth,X,Y,Z) values(" +
                             $"'{container.Reference}', " +
                             $"'{container.Content}', " +
                             $"{container.CurrentShip.Id}, " +
                             $"{container.Origin.Id}, " +
                             $"{container.Destination.Id}, " +
                             $"{(container.IsOpenTop? 1 : 0 )}," +
-                            $"{container.EmptyMass}," +
-                            $"{container.MaxMass}, " +
+                            $"{container.EmptyWeigth}," +
+                            $"{container.MaxWeigth}, " +
                             $"{container.X}, " +
                             $"{container.Y}, " +
                             $"{container.Z} " +
