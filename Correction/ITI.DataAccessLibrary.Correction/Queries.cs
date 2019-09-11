@@ -12,8 +12,8 @@ namespace ITI.DataAccessLibrary.Correction
         readonly string _path;
         readonly internal string _fileName = "database.sqlite";
         readonly string _dbPath;
-        internal SQLiteConnection _connexion;
 
+        internal SQLiteConnection _connexion;
         public Queries()
         {
             _path = Environment.CurrentDirectory.ToString();

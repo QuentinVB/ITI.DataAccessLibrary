@@ -22,9 +22,11 @@ namespace ITI.DataAccessLibrary.Tests
 
         List<Harbor> _harbors;
         List<ContainerShip> _containerShips;
+        List<Container> _containers;
 
         public List<Harbor> Harbors { get => _harbors; private set => _harbors = value; }
         public List<ContainerShip> ContainerShips { get => _containerShips; private set => _containerShips = value; }
+        public List<Container> Containers { get => _containers; set => _containers = value; }
 
         public DBGenerator()
         {
@@ -33,9 +35,11 @@ namespace ITI.DataAccessLibrary.Tests
             _dbPath = $"{_path}\\{_fileName}";
             _randomSource = new Random();
             _harbors = new List<Harbor>();
+            _containerShips = new List<ContainerShip>();
+            _containers = new List<Container>();
         }
 
-        public void CreateDatabase(int amount=100)
+        public void CreateDatabase()
         {
             //clean actual data
             if(File.Exists(_dbPath)) File.Delete(_dbPath);            
@@ -47,13 +51,14 @@ namespace ITI.DataAccessLibrary.Tests
             using (SQLiteConnection connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
             {
                 connexion.Open();
-                CreateHarbourTable(connexion, amount);
-                //CreateShipTable(connexion,amount);
+                CreateHarbourTable(connexion);
+                CreateShipTable(connexion);
+                CreateContainerTable(connexion);
                 connexion.Close();
             }    
         }
 
-        void CreateHarbourTable(SQLiteConnection connexion,int count)
+        void CreateHarbourTable(SQLiteConnection connexion,int count=30)
         {
             using (SQLiteTransaction transaction = connexion.BeginTransaction())
             {
@@ -100,7 +105,7 @@ namespace ITI.DataAccessLibrary.Tests
             }
         }
 
-        void CreateShipTable(SQLiteConnection connexion, int count = 100)
+        void CreateShipTable(SQLiteConnection connexion, int count = 60)
         {
             if (Harbors.Count < 1) throw new InvalidOperationException();
 
@@ -114,61 +119,142 @@ namespace ITI.DataAccessLibrary.Tests
                                         "Id INTEGER PRIMARY KEY," +
                                         "Name text," +
                                         "ATISCode text," +
-                                        "DepartureTime text," +
-                                        "ArrivalTime text," +
                                         "Origin int," +
                                         "Destination int," +
+                                        "DepartureTime text," +
+                                        "ArrivalTime text," +
                                         "Crew int," +
-                                        "MaxWeight int," +
+                                        "MaxWeight int,"+
+                                        "MaxSpeed real," +
                                         "MaxWidth int," +
-                                        "MaxLength int," +
-                                        "MaxHeight int," +
-                                        "MaxSpeed real" +
+                                        "MaxHeight int,"+
+                                        "MaxLength int"+                                       
                                     ")";
                     command.ExecuteNonQuery();
-
 
                     //generate ships
                     ContainerShip containerShip;
                     for (int i = 1; i <= count; i++)
                     {
-                        Harbor originHarbor = Harbors.Single(x=> x.Id == _randomSource.Next(1, _harbors.Count));
-                        Harbor destinationHarbor = Harbors.Single(x=> x.Id == _randomSource.Next(1, _harbors.Count ) && x.Id != originHarbor.Id);
+                        var truc = _randomSource.Next(1, _harbors.Count);
+                        Harbor originHarbor = Harbors.Where(
+                            x=> x.Id == truc
+                            ).First();
+                        var machin = _randomSource.Next(1, _harbors.Count);
+                        Harbor destinationHarbor = Harbors.Where(x=> x.Id == machin).First();
                         DateTime departure = DateTime.Today.AddDays(-_randomSource.Next(15, 35));
 
                         containerShip = new ContainerShip()
                         {
                             Id= i,
                             ATISCode = Guid.NewGuid().ToString(),
-                            Destination = destinationHarbor,
+                            Name = GetRandomName(),
                             Origin = originHarbor,
+                            Destination = destinationHarbor,
                             DepartureTime = departure,
                             ArrivalTime = departure.AddDays(_randomSource.Next(15, 35)),
                             Crew = _randomSource.Next(1,20),
-                            MaxWeight = (int)(_randomSource.NextDouble()*1000),
+                            MaxSpeed = _randomSource.NextDouble() * 10,
                             MaxWidth = _randomSource.Next(6,19),
-                            MaxLength = _randomSource.Next(10, 24),
                             MaxHeight = _randomSource.Next(6, 10),
-                            MaxSpeed = _randomSource.NextDouble()*10,
-                        };
+                            MaxLength = _randomSource.Next(10, 24)
 
-                        //date : "YYYY-MM-DD HH:MM:SS.SSS"
+                        };
+                        containerShip.MaxWeight = (int)(containerShip.MaxWidth * containerShip.MaxHeight * containerShip.MaxLength * _randomSource.NextDouble() * 10);
+
+                        //date : "yyyy-MM-dd HH:mm:ss.fff"
 
                         ContainerShips.Add(containerShip);
 
-                        command.CommandText = "insert into Ship(ATISCode, Name,Destination,Origin,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxWidth,MaxLength,MaxHeight,MaxSpeed) values(" +
+                        command.CommandText = "insert into Ship(ATISCode, Name,Origin,Destination,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxSpeed,MaxWidth,MaxHeight,MaxLength) values(" +
                             $"'{containerShip.ATISCode}', " +
                             $"'{containerShip.Name}', " +
-                            $"'{containerShip.Destination.Id}', " +
-                            $"'{containerShip.Origin.Id}', " +
-                            $"'{containerShip.DepartureTime}'," +
-                            $"'{containerShip.ArrivalTime}'," +
+                            $"{containerShip.Origin.Id}, " +
+                            $"{containerShip.Destination.Id}, " +
+                            $"'{containerShip.DepartureTime.ToString("yyyy-MM-dd HH:mm:ss.fff")}'," +
+                            $"'{containerShip.ArrivalTime.ToString("yyyy-MM-dd HH:mm:ss.fff")}'," +
                             $"{containerShip.Crew}, " +
                             $"{containerShip.MaxWeight}, " +
+                            $"{containerShip.MaxSpeed.ToString(CultureInfo.InvariantCulture)}," +
                             $"{containerShip.MaxWidth}, " +
-                            $"{containerShip.MaxLength}, " +
                             $"{containerShip.MaxHeight}, " +
-                            $"{containerShip.MaxSpeed.ToString(CultureInfo.InvariantCulture)}" +
+                            $"{containerShip.MaxLength} " +
+                            ")";
+                        command.ExecuteNonQuery();
+                    }
+                }
+                transaction.Commit();
+            }
+        }
+        void CreateContainerTable(SQLiteConnection connexion, int count = 1000)
+        {
+            if (Harbors.Count < 1 || ContainerShips.Count < 1) throw new InvalidOperationException();
+
+            using (SQLiteTransaction transaction = connexion.BeginTransaction())
+            {
+                using (SQLiteCommand command = connexion.CreateCommand())
+                {
+                    //create the table
+                    command.CommandText = "create table Container " +
+                                    "(" +
+                                        "Id INTEGER PRIMARY KEY," +
+                                        "Reference text," +
+                                        "Content text," +
+                                        "CurrentShip int," +
+                                        "Origin int," +
+                                        "Destination int," +
+                                        "IsOpenTop int," +
+                                        "EmptyWeigth int," +
+                                        "MaxWeigth int," +
+                                        "X int," +
+                                        "Y int," +
+                                        "Z int" +
+                                    ")";
+                    command.ExecuteNonQuery();
+
+                    //generate Container
+                    Container container ;
+                    for (int i = 1; i <= count; i++)
+                    {
+                        int shipId= _randomSource.Next(1, _containerShips.Count);
+                        ContainerShip currentShip = ContainerShips.Where(
+                            x => x.Id == shipId
+                            ).First();
+
+                        container = new Container()
+                        {
+                            Id = i,
+                            Reference = Guid.NewGuid().ToString(),
+                            Content = "",
+                            CurrentShip=currentShip,
+                            Origin = currentShip.Origin,
+                            Destination = currentShip.Destination,
+                            IsOpenTop = _randomSource.NextDouble()>0.5 ,
+                            EmptyWeigth = _randomSource.Next(10,30),
+                            X = _randomSource.Next(0, currentShip.MaxWidth),
+                            Y = _randomSource.Next(0, currentShip.MaxHeight),
+                            Z = _randomSource.Next(0, currentShip.MaxLength),
+                        };
+                        container.MaxWeigth = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
+
+                        //TODO : Be consistent and store the container at realplace on ships (not randomly)
+
+                        Containers.Add(container);
+
+                        //insert to DB
+                        command.CommandText = "insert into " +
+                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,MaxWeigth,X,Y,Z) values(" +
+                            $"'{container.Reference}', " +
+                            $"'{container.Content}', " +
+                            $"{container.CurrentShip.Id}, " +
+                            $"{container.Origin.Id}, " +
+                            $"{container.Destination.Id}, " +
+                            $"{(container.IsOpenTop? 1 : 0 )}," +
+                            $"{container.EmptyWeigth}," +
+                            $"{container.MaxWeigth}, " +
+                            $"{container.X}, " +
+                            $"{container.Y}, " +
+                            $"{container.Z} " +
                             ")";
                         command.ExecuteNonQuery();
                     }
@@ -180,7 +266,6 @@ namespace ITI.DataAccessLibrary.Tests
 
         string GetRandomName()
         {
-            //todo : generate real names instead of guid
             return GenerateName(_randomSource.Next(5,10));
             //return Guid.NewGuid().ToString();
         }

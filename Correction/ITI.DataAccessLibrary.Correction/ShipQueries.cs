@@ -41,7 +41,6 @@ namespace ITI.DataAccessLibrary.Correction
                 "FROM SHIP" +
                 "INNER JOIN HARBOR ON SHIP.ATIS = HARBOR.CURRENTSHIP" +
                 "WHERE HARBOR.COUNTRY = 'FR'";
-
             return null;
         }
 
