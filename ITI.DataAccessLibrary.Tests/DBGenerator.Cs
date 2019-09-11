@@ -1,16 +1,12 @@
-﻿using ITI.DataAccessLibrary.Correction.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-/// <summary>
-/// http://zetcode.com/db/sqlitecsharp/trans/
-/// http://www.tsjensen.com/blog/post/2012/11/10/SQLite-on-Visual-Studio-with-NuGet-and-Easy-Instructions
-/// </summary>
+using ITI.DataAccessLibrary.Model;
+
 namespace ITI.DataAccessLibrary.Tests
 {
     public class DBGenerator
@@ -161,9 +157,7 @@ namespace ITI.DataAccessLibrary.Tests
 
                         };
                         containerShip.MaxWeight = (int)(containerShip.MaxWidth * containerShip.MaxHeight * containerShip.MaxLength * _randomSource.NextDouble() * 10);
-
-                        //date : "yyyy-MM-dd HH:mm:ss.fff"
-
+                        
                         ContainerShips.Add(containerShip);
 
                         command.CommandText = "insert into Ship(ATISCode, Name,Origin,Destination,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxSpeed,MaxWidth,MaxHeight,MaxLength) values(" +
@@ -265,7 +259,6 @@ namespace ITI.DataAccessLibrary.Tests
         string GetRandomName()
         {
             return GenerateName(_randomSource.Next(5,10));
-            //return Guid.NewGuid().ToString();
         }
         public static string GenerateName(int len)
         {
