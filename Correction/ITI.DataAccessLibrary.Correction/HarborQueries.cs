@@ -20,7 +20,7 @@ namespace ITI.DataAccessLibrary.Correction
 
             List<Harbor> result = new List<Harbor>();
 
-            using (_connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
+            using (_connexion = new SQLiteConnection(_connString))
             {
                 _connexion.Open();
                 using (SQLiteCommand command = _connexion.CreateCommand())
@@ -55,13 +55,17 @@ namespace ITI.DataAccessLibrary.Correction
             return result;
         }
 
+        /// <summary>
+        /// Get all harbors name by country
+        /// </summary>
+        /// <returns></returns>
         public List<Harbor> GetHarborByCountry()
         {
-            string query = "SELECT COUNTRY, NAME FROM HARBOUR ORDER BY COUNTRY";
+            string query = "SELECT COUNTRY, NAME FROM HARBOR ORDER BY COUNTRY";
 
             List<Harbor> result = new List<Harbor>();
 
-            using (_connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
+            using (_connexion = new SQLiteConnection(_connString))
             {
                 _connexion.Open();
                 using (SQLiteCommand command = _connexion.CreateCommand())
@@ -71,7 +75,7 @@ namespace ITI.DataAccessLibrary.Correction
                     {
                         while (reader.Read())
                         {
-                            string country = reader.GetString(0);
+                            string country = reader.GetString(2);
                             string name = reader.GetString(1);
 
                             Harbor h = new Harbor();
@@ -87,6 +91,10 @@ namespace ITI.DataAccessLibrary.Correction
                 return result;
         }
 
+        /// <summary>
+        /// Insert a harbor into the database
+        /// </summary>
+        /// <param name="harbor"></param>
         public void InsertHarbor( Harbor harbor )
         {
             string query = "INSERT INTO HARBOR VALUES(" +
@@ -97,7 +105,7 @@ namespace ITI.DataAccessLibrary.Correction
                 $"{harbor.Longitude}, " +
                 ")";
 
-            using (_connexion = new SQLiteConnection($"Data Source={_fileName};Version=3;"))
+            using (_connexion = new SQLiteConnection(_connString))
             {
                 _connexion.Open();
                 using (SQLiteTransaction transaction = _connexion.BeginTransaction())

@@ -23,7 +23,7 @@ namespace ITI.DataAccessLibrary.Tests
             ShipQueries sut = new ShipQueries();
 
             //Act
-            List<ContainerShip> data = sut.GetAllShip();
+            List<ContainerShip> data = sut.GetAllShips();
 
             //Assert
             Assert.AreEqual(generator.ContainerShips.Count, data.Count);

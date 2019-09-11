@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,25 +8,88 @@ using ITI.DataAccessLibrary.Correction.Model;
 
 namespace ITI.DataAccessLibrary.Correction
 {
-    public class ShipQueries
+    public class ShipQueries : Queries
     {
-        public List<ContainerShip> GetAllShip()
+
+        /// <summary>
+        /// Return all ships in the database
+        /// </summary>
+        /// <returns></returns>
+        public List<ContainerShip> GetAllShips()
         {
             string query = "SELECT * " +
                 "FROM SHIP";
 
-            return null;
+            List<ContainerShip> result = new List<ContainerShip>();
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                _connexion.Open();
+                using (SQLiteCommand command = _connexion.CreateCommand())
+                {
+                    command.CommandText = query;
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                           
+                        }
+                    }
+                }
+                _connexion.Close();
+            }
+
+            return result;
         }
 
-        public List<ContainerShip> GetShipByCrew()
+        /// <summary>
+        /// Return the name of ships ordered by crew size
+        /// </summary>
+        /// <returns></returns>
+        public List<ContainerShip> GetShipsByCrew()
         {
-            string query = "SELECT NAME, CREW " +
+            string query = "SELECT * " +
                 "FROM SHIP " +
                 "ORDER BY CREW";
 
             return null;
         }
 
+        /// <summary>
+        /// Return a ship by it's Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ContainerShip GetShipById(int id)
+        {
+            string query = "SELECT *" +
+                "FROM SHIP S" +
+                $"WHERE S.ID = {id}";
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                _connexion.Open();
+                using (SQLiteCommand command = _connexion.CreateCommand())
+                {
+                    command.CommandText = query;
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+
+                        }
+                    }
+                }
+                _connexion.Close();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Return the ship name ordered by departure time
+        /// </summary>
+        /// <returns></returns>
         public List<ContainerShip> GetShipByDepartureTime()
         {
             string query = "SELECT NAME, DEPARTURETIME " +
@@ -35,15 +99,19 @@ namespace ITI.DataAccessLibrary.Correction
             return null;
         }
 
-        public List<ContainerShip> GetShipWIthHarborInCountry()
-        {
-            string query = "SELECT SH.NAME AS SHIPNAME, H.NAME AS HARBORNAME " +
-                "FROM SHIP" +
-                "INNER JOIN HARBOR ON SHIP.ATIS = HARBOR.CURRENTSHIP" +
-                "WHERE HARBOR.COUNTRY = 'FR'";
-            return null;
-        }
+        //public List<ContainerShip> GetShipWIthHarborInCountry()
+        //{
+        //    string query = "SELECT SH.NAME AS SHIPNAME, H.NAME AS HARBORNAME " +
+        //        "FROM SHIP" +
+        //        "INNER JOIN HARBOR ON SHIP.ATIS = HARBOR.CURRENTSHIP" +
+        //        "WHERE HARBOR.COUNTRY = 'FR'";
+        //    return null;
+        //}
 
+        /// <summary>
+        /// Return all ships with an empty cargo
+        /// </summary>
+        /// <returns></returns>
         public List<ContainerShip> GetAllEmptyShips()
         {
             string query = "SELECT * " +
@@ -57,16 +125,24 @@ namespace ITI.DataAccessLibrary.Correction
             return null;
         }
 
+        /// <summary>
+        /// Return all ships ordered by volume
+        /// </summary>
+        /// <returns></returns>
         public List<ContainerShip> GetShipByVolume()
         {
             string query = " SELECT NAME, ( MAXWIDTH * MAXLENGTH * MAXHEIGHT ) AS VOLUME " +
-                "FROM SHIP";
+                "FROM SHIP" +
+                "ORDER BY VOLUME";
 
             return null;
         }
 
 
-
+        /// <summary>
+        /// Insert shipinto the database
+        /// </summary>
+        /// <param name="ship"></param>
         public void InsertShip( ContainerShip ship )
         {
             string query = $"INSERT INTO SHIP values(" +
@@ -86,13 +162,21 @@ namespace ITI.DataAccessLibrary.Correction
                 $")";
         }
 
+        /// <summary>
+        /// Delete  ship of  given Id
+        /// </summary>
+        /// <param name="ship"></param>
         public void DeleteShip( ContainerShip ship )
         {
             string query = $"DELETE FROM SHIP " +
                 $"WHERE {ship.ATISCode}";
         }
 
-        public void UpdateShip( ContainerShip ship )
+        /// <summary>
+        /// Update a ship's destination nd arrival date
+        /// </summary>
+        /// <param name="ship"></param>
+        public void ChangeShipDestinationAndArrivalDate( ContainerShip ship )
         {
 
         }
