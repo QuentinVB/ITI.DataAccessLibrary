@@ -27,15 +27,8 @@ namespace ITI.DataAccessLibrary.Tests
 
             //Assert
             Assert.AreEqual(generator.Harbors.Count, data.Count);
-
-            generator.Harbors.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
-            data.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
+            generator.Harbors.OrderBy(h => h.Id);
+            data.OrderBy(h => h.Id);
 
             for (int i = 0; i < generator.Harbors.Count; i++)
             {
@@ -58,7 +51,6 @@ namespace ITI.DataAccessLibrary.Tests
             List<Harbor> data = sut.GetHarborByCountry();
 
             //Assert
-
             Assert.AreEqual(genData.Count, data.Count);
             for(int i = 0; i < genData.Count; i++)
             {

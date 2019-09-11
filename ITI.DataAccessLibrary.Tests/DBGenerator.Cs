@@ -225,7 +225,7 @@ namespace ITI.DataAccessLibrary.Tests
                         {
                             Id = i,
                             Reference = Guid.NewGuid().ToString(),
-                            Content = "",
+                            Content = GetRandomContent(),
                             CurrentShip=currentShip,
                             Origin = currentShip.Origin,
                             Destination = currentShip.Destination,
@@ -237,7 +237,7 @@ namespace ITI.DataAccessLibrary.Tests
                         };
                         container.MaxWeigth = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
 
-                        //TODO : Be consistent and store the container at realplace on ships (not randomly)
+                        //TODO : Be consistent and store the container at real place on ships (not randomly)
 
                         Containers.Add(container);
 
@@ -262,8 +262,6 @@ namespace ITI.DataAccessLibrary.Tests
                 transaction.Commit();
             }
         }
-
-
         string GetRandomName()
         {
             return GenerateName(_randomSource.Next(5,10));
@@ -285,8 +283,11 @@ namespace ITI.DataAccessLibrary.Tests
                 Name.Append(vowels[r.Next(vowels.Length)]);
                 b++;
             }
-
             return Name.ToString();
+        }
+        public string GetRandomContent()
+        {
+            return "des trucs";
         }
     }
 }
