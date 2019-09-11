@@ -39,10 +39,12 @@ namespace ITI.DataAccessLibrary.Tests
 
             for (int i = 0; i < generator.ContainerShips.Count; i++)
             {
-                Assert.AreEqual(generator.Harbors[i].Name, data[i].Name);
+                Assert.AreEqual(generator.ContainerShips[i].Name, data[i].Name);
             }
 
-        }       
+        }
+        
+        
     }
 }
 

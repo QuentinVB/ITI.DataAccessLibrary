@@ -66,6 +66,24 @@ namespace ITI.DataAccessLibrary.Tests
                 Assert.AreEqual(genData[i].Name, data[i].Name);
             }       
         }
+
+        [Test]
+        public void t3_can_get_correct_harbor_by_id()
+        {
+            //Arrange
+            generator.CreateDatabase();
+            HarborQueries sut = new HarborQueries();
+
+            //Act
+            Harbor genData = generator.Harbors.FirstOrDefault();
+            Harbor data = sut.GetHarborById(genData.Id);
+
+            //Assert
+            Assert.AreEqual(genData.Name, data.Name);
+            Assert.AreEqual(genData.Country, data.Country);
+            Assert.That(genData.Latitude, Is.EqualTo(data.Latitude).Within(0.00001));
+            Assert.That(genData.Longitude, Is.EqualTo(data.Longitude).Within(0.00001));
+        }
     }
 }
 

@@ -10,6 +10,7 @@ namespace ITI.DataAccessLibrary.Correction
 {
     public class ShipQueries : Queries
     {
+        internal HarborQueries harborQueries = new HarborQueries();
 
         /// <summary>
         /// Return all ships in the database
@@ -17,8 +18,7 @@ namespace ITI.DataAccessLibrary.Correction
         /// <returns></returns>
         public List<ContainerShip> GetAllShips()
         {
-            string query = "SELECT * " +
-                "FROM SHIP";
+            string query = "SELECT * FROM SHIP";
 
             List<ContainerShip> result = new List<ContainerShip>();
 
@@ -32,8 +32,25 @@ namespace ITI.DataAccessLibrary.Correction
                     {
                         while (reader.Read())
                         {
-                           
+                            ContainerShip ship = new ContainerShip
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                ATISCode = reader["ATISCode"].ToString(),
+                                Origin = harborQueries.GetHarborById(Convert.ToInt32(reader["Origin"])),
+                                Destination = harborQueries.GetHarborById(Convert.ToInt32(reader["Destination"])),
+                                DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString()),
+                                ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString()),
+                                Crew = Convert.ToInt32(reader["Crew"]),
+                                MaxWeight = Convert.ToInt32(reader["MaxWeight"]),
+                                MaxSpeed = Convert.ToDouble(reader["MaxSpeed"]),
+                                MaxWidth = Convert.ToInt32(reader["MaxWidth"]),
+                                MaxHeight = Convert.ToInt32(reader["MaxHeight"]),
+                                MaxLength = Convert.ToInt32(reader["MaxLength"])
+                            };
+                            result.Add(ship);
                         }
+                        
                     }
                 }
                 _connexion.Close();
@@ -66,6 +83,8 @@ namespace ITI.DataAccessLibrary.Correction
                 "FROM SHIP S" +
                 $"WHERE S.ID = {id}";
 
+            ContainerShip result = new ContainerShip();
+
             using (_connexion = new SQLiteConnection(_connString))
             {
                 _connexion.Open();
@@ -76,14 +95,26 @@ namespace ITI.DataAccessLibrary.Correction
                     {
                         while (reader.Read())
                         {
-
+                            result.Id = Convert.ToInt32(reader["Id"]);
+                            result.ATISCode = reader["ATISCode"].ToString();
+                            result.Name = reader["Name"].ToString();
+                            result.Origin = harborQueries.GetHarborById(Convert.ToInt32(reader["Origin"]));
+                            result.Destination = harborQueries.GetHarborById(Convert.ToInt32(reader["Destination"]));
+                            result.DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString());
+                            result.ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString());
+                            result.Crew = Convert.ToInt32(reader["Crew"]);
+                            result.MaxWeight = Convert.ToInt32(reader["MaxWeight"]);
+                            result.MaxSpeed = Convert.ToDouble(reader["MaxSpeed"]);
+                            result.MaxWidth = Convert.ToInt32(reader["MaxWidth"]);
+                            result.MaxHeight = Convert.ToInt32(reader["MaxHeight"]);
+                            result.MaxLength = Convert.ToInt32(reader["MaxLength"]);
                         }
                     }
                 }
                 _connexion.Close();
             }
 
-            return null;
+            return result;
         }
 
         /// <summary>
