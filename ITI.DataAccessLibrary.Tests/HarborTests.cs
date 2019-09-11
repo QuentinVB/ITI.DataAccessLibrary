@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ITI.DataAccessLibrary.Tests
 {
-    public class T1_HarborTests
+    public class T1HarborTests
     {
         DBGenerator generator;
         [SetUp]
@@ -16,7 +16,7 @@ namespace ITI.DataAccessLibrary.Tests
         }
 
         [Test]
-        public void t1_getAllHarbors()
+        public void t1_the_harbors_can_be_all_get()
         {
             //Arrange
             generator.CreateDatabase();

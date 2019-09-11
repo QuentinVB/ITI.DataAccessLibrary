@@ -10,6 +10,10 @@ namespace ITI.DataAccessLibrary.Correction
 {
     public class HarborQueries : Queries
     {
+        /// <summary>
+        /// Gets all harbors.
+        /// </summary>
+        /// <returns>A list of Harbors</returns>
         public List<Harbor> GetAllHarbor()
         {
             string query = "SELECT * FROM HARBOR";
@@ -30,14 +34,16 @@ namespace ITI.DataAccessLibrary.Correction
                             string name = reader.GetString(1);
                             string country = reader.GetString(2);
                             double lati = reader.GetDouble(3);
-                            double longi = reader.GetDouble(4);                           
+                            double longi = reader.GetDouble(4);
 
-                            Harbor h = new Harbor();
-                            h.Country = country;
-                            h.Id = id;
-                            h.Latitude = lati;
-                            h.Longitude = longi;
-                            h.Name = name;
+                            Harbor h = new Harbor
+                            {
+                                Country = country,
+                                Id = id,
+                                Latitude = lati,
+                                Longitude = longi,
+                                Name = name
+                            };
 
                             result.Add(h);
                         }

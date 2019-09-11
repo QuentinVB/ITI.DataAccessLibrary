@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ITI.DataAccessLibrary.Tests
 {
-    public class T2_ShipTests
+    public class T2ShipTests
     {
         DBGenerator generator;
         [SetUp]

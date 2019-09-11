@@ -226,6 +226,7 @@ namespace ITI.DataAccessLibrary.Tests
                             Id = i,
                             Reference = Guid.NewGuid().ToString(),
                             Content = "",
+                            CurrentShip=currentShip,
                             Origin = currentShip.Origin,
                             Destination = currentShip.Destination,
                             IsOpenTop = _randomSource.Next(0, 1)>0 ,
@@ -242,9 +243,10 @@ namespace ITI.DataAccessLibrary.Tests
                         Containers.Add(container);
 
                         command.CommandText = "insert into " +
-                            "Container(Id, Reference,Content,Origin,Destination,IsOpenTop,EmptyMass,X,Y,Z) values(" +
+                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyMass,MaxMass,X,Y,Z) values(" +
                             $"'{container.Reference}', " +
                             $"'{container.Content}', " +
+                            $"{container.CurrentShip.Id}, " +
                             $"{container.Origin.Id}, " +
                             $"{container.Destination.Id}, " +
                             $"{(container.IsOpenTop? 1 : 0 )}," +
