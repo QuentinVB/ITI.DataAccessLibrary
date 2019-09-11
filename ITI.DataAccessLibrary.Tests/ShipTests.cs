@@ -28,14 +28,8 @@ namespace ITI.DataAccessLibrary.Tests
             //Assert
             Assert.AreEqual(generator.ContainerShips.Count, data.Count);
 
-            generator.ContainerShips.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
-            data.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
+            generator.ContainerShips.OrderBy(s => s.Id);
+            data.OrderBy(s => s.Id);
 
             for (int i = 0; i < generator.ContainerShips.Count; i++)
             {
