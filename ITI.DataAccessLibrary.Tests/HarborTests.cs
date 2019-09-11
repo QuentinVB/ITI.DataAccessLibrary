@@ -44,8 +44,28 @@ namespace ITI.DataAccessLibrary.Tests
                 Assert.That(generator.Harbors[i].Latitude, Is.EqualTo(data[i].Latitude).Within(0.00001));
                 Assert.That(generator.Harbors[i].Longitude, Is.EqualTo(data[i].Longitude).Within(0.00001));
             }
+        }
 
-        }       
+        [Test]
+        public void t1_getHarborByCountry()
+        {
+            //Arrange
+            generator.CreateDatabase();
+            HarborQueries sut = new HarborQueries();
+
+            //Act
+            List<Harbor> genData = generator.Harbors.OrderBy(h => h.Country ).ToList();
+            List<Harbor> data = sut.GetHarborByCountry();
+
+            //Assert
+
+            Assert.AreEqual(genData.Count, data.Count);
+            for(int i = 0; i < genData.Count; i++)
+            {
+                Assert.AreEqual(genData[i].Country, data[i].Country);
+                Assert.AreEqual(genData[i].Name, data[i].Name);
+            }       
+        }
     }
 }
 
