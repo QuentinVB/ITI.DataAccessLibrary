@@ -1,8 +1,8 @@
-using ITI.DataAccessLibrary.Correction;
-using ITI.DataAccessLibrary.Correction.Model;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using ITI.DataAccessLibrary;
+using ITI.DataAccessLibrary.Model;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -27,15 +27,8 @@ namespace ITI.DataAccessLibrary.Tests
 
             //Assert
             Assert.AreEqual(generator.Harbors.Count, data.Count);
-
-            generator.Harbors.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
-            data.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
+            generator.Harbors.OrderBy(h => h.Id);
+            data.OrderBy(h => h.Id);
 
             for (int i = 0; i < generator.Harbors.Count; i++)
             {
@@ -58,13 +51,30 @@ namespace ITI.DataAccessLibrary.Tests
             List<Harbor> data = sut.GetHarborByCountry();
 
             //Assert
-
             Assert.AreEqual(genData.Count, data.Count);
             for(int i = 0; i < genData.Count; i++)
             {
                 Assert.AreEqual(genData[i].Country, data[i].Country);
                 Assert.AreEqual(genData[i].Name, data[i].Name);
             }       
+        }
+
+        [Test]
+        public void t3_can_get_correct_harbor_by_id()
+        {
+            //Arrange
+            generator.CreateDatabase();
+            HarborQueries sut = new HarborQueries();
+
+            //Act
+            Harbor genData = generator.Harbors.FirstOrDefault();
+            Harbor data = sut.GetHarborById(genData.Id);
+
+            //Assert
+            Assert.AreEqual(genData.Name, data.Name);
+            Assert.AreEqual(genData.Country, data.Country);
+            Assert.That(genData.Latitude, Is.EqualTo(data.Latitude).Within(0.00001));
+            Assert.That(genData.Longitude, Is.EqualTo(data.Longitude).Within(0.00001));
         }
     }
 }

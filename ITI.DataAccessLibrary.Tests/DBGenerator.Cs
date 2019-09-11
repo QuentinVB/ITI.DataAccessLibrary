@@ -1,16 +1,12 @@
-﻿using ITI.DataAccessLibrary.Correction.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-/// <summary>
-/// http://zetcode.com/db/sqlitecsharp/trans/
-/// http://www.tsjensen.com/blog/post/2012/11/10/SQLite-on-Visual-Studio-with-NuGet-and-Easy-Instructions
-/// </summary>
+using ITI.DataAccessLibrary.Model;
+
 namespace ITI.DataAccessLibrary.Tests
 {
     public class DBGenerator
@@ -154,16 +150,14 @@ namespace ITI.DataAccessLibrary.Tests
                             DepartureTime = departure,
                             ArrivalTime = departure.AddDays(_randomSource.Next(15, 35)),
                             Crew = _randomSource.Next(1,20),
-                            MaxSpeed = _randomSource.NextDouble() * 10,
+                            MaxSpeed = _randomSource.NextDouble() * 20,
                             MaxWidth = _randomSource.Next(6,19),
                             MaxHeight = _randomSource.Next(6, 10),
                             MaxLength = _randomSource.Next(10, 24)
 
                         };
                         containerShip.MaxWeight = (int)(containerShip.MaxWidth * containerShip.MaxHeight * containerShip.MaxLength * _randomSource.NextDouble() * 10);
-
-                        //date : "yyyy-MM-dd HH:mm:ss.fff"
-
+                        
                         ContainerShips.Add(containerShip);
 
                         command.CommandText = "insert into Ship(ATISCode, Name,Origin,Destination,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxSpeed,MaxWidth,MaxHeight,MaxLength) values(" +
@@ -225,7 +219,7 @@ namespace ITI.DataAccessLibrary.Tests
                         {
                             Id = i,
                             Reference = Guid.NewGuid().ToString(),
-                            Content = "",
+                            Content = GetRandomContent(),
                             CurrentShip=currentShip,
                             Origin = currentShip.Origin,
                             Destination = currentShip.Destination,
@@ -237,7 +231,7 @@ namespace ITI.DataAccessLibrary.Tests
                         };
                         container.MaxWeigth = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
 
-                        //TODO : Be consistent and store the container at realplace on ships (not randomly)
+                        //TODO : Be consistent and store the container at real place on ships (not randomly)
 
                         Containers.Add(container);
 
@@ -262,12 +256,9 @@ namespace ITI.DataAccessLibrary.Tests
                 transaction.Commit();
             }
         }
-
-
         string GetRandomName()
         {
             return GenerateName(_randomSource.Next(5,10));
-            //return Guid.NewGuid().ToString();
         }
         public static string GenerateName(int len)
         {
@@ -285,8 +276,11 @@ namespace ITI.DataAccessLibrary.Tests
                 Name.Append(vowels[r.Next(vowels.Length)]);
                 b++;
             }
-
             return Name.ToString();
+        }
+        public string GetRandomContent()
+        {
+            return "des trucs";
         }
     }
 }

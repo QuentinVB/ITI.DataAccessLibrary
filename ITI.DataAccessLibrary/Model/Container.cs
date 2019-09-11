@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ITI.DataAccessLibrary.Model
+﻿namespace ITI.DataAccessLibrary.Model
 {
     public class Container
     {
@@ -15,10 +9,11 @@ namespace ITI.DataAccessLibrary.Model
         public Harbor Origin { get; set; }
         public Harbor Destination { get; set; }
         public bool IsOpenTop { get; set; }
-        public int EmptyMass { get; set; }
-        public int MaxMass { get; set; }
+        public int EmptyWeigth { get; set; }
+        public int MaxWeigth { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int Z { get; set; }
+        
     }
 }

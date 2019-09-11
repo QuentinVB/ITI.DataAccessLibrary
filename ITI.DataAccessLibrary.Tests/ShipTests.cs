@@ -1,8 +1,8 @@
-using ITI.DataAccessLibrary.Correction;
-using ITI.DataAccessLibrary.Correction.Model;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using ITI.DataAccessLibrary;
+using ITI.DataAccessLibrary.Model;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -28,21 +28,14 @@ namespace ITI.DataAccessLibrary.Tests
             //Assert
             Assert.AreEqual(generator.ContainerShips.Count, data.Count);
 
-            generator.ContainerShips.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
-            data.Sort((x, y) =>
-            {
-                return y.Id.CompareTo(x.Id);
-            });
+            generator.ContainerShips.OrderBy(s => s.Id);
+            data.OrderBy(s => s.Id);
 
             for (int i = 0; i < generator.ContainerShips.Count; i++)
             {
-                Assert.AreEqual(generator.Harbors[i].Name, data[i].Name);
+                Assert.AreEqual(generator.ContainerShips[i].Name, data[i].Name);
             }
-
-        }       
+        } 
     }
 }
 
