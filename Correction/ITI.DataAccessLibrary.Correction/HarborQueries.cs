@@ -75,7 +75,7 @@ namespace ITI.DataAccessLibrary.Correction
                     {
                         while (reader.Read())
                         {
-                            string country = reader.GetString(2);
+                            string country = reader.GetString(0);
                             string name = reader.GetString(1);
 
                             Harbor h = new Harbor();
@@ -89,6 +89,38 @@ namespace ITI.DataAccessLibrary.Correction
                 _connexion.Close();
             }
                 return result;
+        }
+
+        public Harbor GetHarborById(int id)
+        {
+            string query = "SELECT *" +
+                "FROM HARBOR H " +
+                $"WHERE H.ID = {id}";
+
+            Harbor result = new Harbor();
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                _connexion.Open();
+                using (SQLiteCommand command = _connexion.CreateCommand())
+                {
+                    command.CommandText = query;
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            result.Id = id;
+                            result.Name = reader.GetString(1);
+                            result.Country = reader.GetString(2);
+                            result.Latitude = reader.GetDouble(3);
+                            result.Longitude = reader.GetDouble(4);
+                        }
+                    }
+                }
+                _connexion.Close();
+            }
+
+            return result;
         }
 
         /// <summary>
