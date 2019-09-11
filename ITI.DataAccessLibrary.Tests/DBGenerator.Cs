@@ -154,7 +154,7 @@ namespace ITI.DataAccessLibrary.Tests
                             DepartureTime = departure,
                             ArrivalTime = departure.AddDays(_randomSource.Next(15, 35)),
                             Crew = _randomSource.Next(1,20),
-                            MaxSpeed = _randomSource.NextDouble() * 10,
+                            MaxSpeed = _randomSource.NextDouble() * 20,
                             MaxWidth = _randomSource.Next(6,19),
                             MaxHeight = _randomSource.Next(6, 10),
                             MaxLength = _randomSource.Next(10, 24)
