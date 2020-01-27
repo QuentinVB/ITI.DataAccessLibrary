@@ -13,13 +13,15 @@ namespace ITI.DataAccessLibrary.Tests
         public void Setup()
         {
             generator = new DBGenerator();
+            generator.CreateDatabase();
         }
+
+        //TODO : Create, Update, Delete Ship
 
         [Test]
         public void t1_getAllShips()
         {
             //Arrange
-            generator.CreateDatabase();
             ShipQueries sut = new ShipQueries();
 
             //Act
