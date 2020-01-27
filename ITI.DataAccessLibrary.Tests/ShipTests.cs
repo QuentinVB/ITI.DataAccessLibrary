@@ -64,12 +64,13 @@ namespace ITI.DataAccessLibrary.Tests
 
             //Act
             List<ContainerShip> data = sut.GetShipsByCrew();
-            generator.ContainerShips.OrderBy(s => s.Crew);
+            List<ContainerShip> sortgen = generator.ContainerShips.OrderBy(s => s.Crew).ToList();
+            data.OrderBy(d => d.Crew);
 
             //Assert
             for (int i = 0; i < generator.ContainerShips.Count; i++)
             {
-                Assert.AreEqual(generator.ContainerShips[i].Crew, data[i].Crew);
+                Assert.AreEqual(sortgen[i].Crew, data[i].Crew);
             }
         }
     }
