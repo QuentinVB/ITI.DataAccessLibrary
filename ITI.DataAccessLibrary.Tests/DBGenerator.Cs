@@ -16,6 +16,10 @@ namespace ITI.DataAccessLibrary.Tests
         readonly string _dbPath;
         Random _randomSource;
 
+        const int DEFAULT_HARBOR_COUNT = 10;
+        const int DEFAULT_SHIP_COUNT = 5;
+        const int DEFAULT_CONTAINER_COUNT = 100;
+
         List<Harbor> _harbors;
         List<ContainerShip> _containerShips;
         List<Container> _containers;
@@ -54,7 +58,7 @@ namespace ITI.DataAccessLibrary.Tests
             }    
         }
 
-        void CreateHarbourTable(SQLiteConnection connexion,int count=30)
+        void CreateHarbourTable(SQLiteConnection connexion,int count= DEFAULT_HARBOR_COUNT)
         {
             using (SQLiteTransaction transaction = connexion.BeginTransaction())
             {
@@ -101,7 +105,7 @@ namespace ITI.DataAccessLibrary.Tests
             }
         }
 
-        void CreateShipTable(SQLiteConnection connexion, int count = 60)
+        void CreateShipTable(SQLiteConnection connexion, int count = DEFAULT_SHIP_COUNT)
         {
             if (Harbors.Count < 1) throw new InvalidOperationException();
 
@@ -180,7 +184,7 @@ namespace ITI.DataAccessLibrary.Tests
                 transaction.Commit();
             }
         }
-        void CreateContainerTable(SQLiteConnection connexion, int count = 1000)
+        void CreateContainerTable(SQLiteConnection connexion, int count = DEFAULT_CONTAINER_COUNT)
         {
             if (Harbors.Count < 1 || ContainerShips.Count < 1) throw new InvalidOperationException();
 
@@ -238,7 +242,7 @@ namespace ITI.DataAccessLibrary.Tests
                         //insert to DB
                         command.CommandText = "insert into " +
                             "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,MaxWeigth,X,Y,Z) values(" +
-                            $"'{container.Reference}', " +
+                            $"'{container.Reference.Substring(0,8)}', " +
                             $"'{container.Content}', " +
                             $"{container.CurrentShip.Id}, " +
                             $"{container.Origin.Id}, " +
@@ -278,9 +282,24 @@ namespace ITI.DataAccessLibrary.Tests
             }
             return Name.ToString();
         }
-        public string GetRandomContent()
+        public static string GetRandomContent()
         {
-            return "des trucs";
+            Random r = new Random();
+            switch (r.Next(0,11))
+            {
+                case 0: return "Wheat";
+                case 1: return "Playstation 4";
+                case 2: return "Vegetable";
+                case 3: return "Toys";
+                case 4: return "Metal plates";
+                case 5: return "Wood planks";
+                case 6: return "Electronic components";
+                case 8: return "Car components";
+                case 9: return "Cloths";
+                case 10: return "Books";
+                case 11: return "Scooters";
+                default: return "somethings";
+            }
         }
     }
 }
