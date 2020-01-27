@@ -69,7 +69,43 @@ namespace ITI.DataAccessLibrary.Correction
                 "FROM SHIP " +
                 "ORDER BY CREW";
 
-            return null;
+            List<ContainerShip> result = new List<ContainerShip>();
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                _connexion.Open();
+                using (SQLiteCommand command = _connexion.CreateCommand())
+                {
+                    command.CommandText = query;
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ContainerShip ship = new ContainerShip
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                ATISCode = reader["ATISCode"].ToString(),
+                                Origin = harborQueries.GetHarborById(Convert.ToInt32(reader["Origin"])),
+                                Destination = harborQueries.GetHarborById(Convert.ToInt32(reader["Destination"])),
+                                DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString()),
+                                ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString()),
+                                Crew = Convert.ToInt32(reader["Crew"]),
+                                MaxWeight = Convert.ToInt32(reader["MaxWeight"]),
+                                MaxSpeed = Convert.ToDouble(reader["MaxSpeed"]),
+                                MaxWidth = Convert.ToInt32(reader["MaxWidth"]),
+                                MaxHeight = Convert.ToInt32(reader["MaxHeight"]),
+                                MaxLength = Convert.ToInt32(reader["MaxLength"])
+                            };
+                            result.Add(ship);
+                        }
+
+                    }
+                }
+                _connexion.Close();
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -80,7 +116,7 @@ namespace ITI.DataAccessLibrary.Correction
         public ContainerShip GetShipById(int id)
         {
             string query = "SELECT *" +
-                "FROM SHIP S" +
+                "FROM SHIP S " +
                 $"WHERE S.ID = {id}";
 
             ContainerShip result = new ContainerShip();
@@ -204,7 +240,7 @@ namespace ITI.DataAccessLibrary.Correction
         }
 
         /// <summary>
-        /// Update a ship's destination nd arrival date
+        /// Update a ship's destination and arrival date
         /// </summary>
         /// <param name="ship"></param>
         public void ChangeShipDestinationAndArrivalDate( ContainerShip ship )
