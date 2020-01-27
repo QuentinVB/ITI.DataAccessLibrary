@@ -16,9 +16,9 @@ namespace ITI.DataAccessLibrary.Tests
         readonly string _dbPath;
         Random _randomSource;
 
-        const int DEFAULT_HARBOR_COUNT = 10;
-        const int DEFAULT_SHIP_COUNT = 5;
-        const int DEFAULT_CONTAINER_COUNT = 100;
+        public const int DEFAULT_HARBOR_COUNT = 10;
+        public const int DEFAULT_SHIP_COUNT = 5;
+        public const int DEFAULT_CONTAINER_COUNT = 100;
 
         List<Harbor> _harbors;
         List<ContainerShip> _containerShips;
