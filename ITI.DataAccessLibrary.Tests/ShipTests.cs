@@ -38,7 +38,40 @@ namespace ITI.DataAccessLibrary.Tests
 
         }
         
-        
+        [Test]
+        public void t2_get_correct_ship_by_id()
+        {
+            //Arrange
+            generator.CreateDatabase();
+            ShipQueries sut = new ShipQueries();
+
+            //Act
+            ContainerShip genData = generator.ContainerShips.FirstOrDefault();
+            ContainerShip data = sut.GetShipById(genData.Id);
+
+            //Assert
+            Assert.AreEqual(genData.Id, data.Id);
+            Assert.AreEqual(genData.Name, data.Name);
+            Assert.AreEqual(genData.Crew, data.Crew);
+        }
+
+        [Test]
+        public void t3_get_ship_by_crew_size_return_list_in_right_order()
+        {
+            //Arrange
+            generator.CreateDatabase();
+            ShipQueries sut = new ShipQueries();
+
+            //Act
+            List<ContainerShip> data = sut.GetShipsByCrew();
+            generator.ContainerShips.OrderBy(s => s.Crew);
+
+            //Assert
+            for (int i = 0; i < generator.ContainerShips.Count; i++)
+            {
+                Assert.AreEqual(generator.ContainerShips[i].Crew, data[i].Crew);
+            }
+        }
     }
 }
 
