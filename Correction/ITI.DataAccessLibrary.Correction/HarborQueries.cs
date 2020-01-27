@@ -155,7 +155,7 @@ namespace ITI.DataAccessLibrary.Correction
 
         public void DeleteHarbor( Harbor harbor )
         {
-            string query = $"DELETE FROM SHIP" +
+            string query = $"DELETE FROM HARBOR" +
                 $"WHERE {harbor.Id}";
 
             using (_connexion = new SQLiteConnection(_connString))
@@ -175,7 +175,8 @@ namespace ITI.DataAccessLibrary.Correction
 
         public void UpdateHarbor( )
         {
-
+            string query = $"UPDATE HARBOR" +
+                $"SET";
         }
     }
 }
