@@ -1,16 +1,12 @@
-﻿using ITI.DataAccessLibrary.Correction.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-/// <summary>
-/// http://zetcode.com/db/sqlitecsharp/trans/
-/// http://www.tsjensen.com/blog/post/2012/11/10/SQLite-on-Visual-Studio-with-NuGet-and-Easy-Instructions
-/// </summary>
+using ITI.DataAccessLibrary.Model;
+
 namespace ITI.DataAccessLibrary.Tests
 {
     public class DBGenerator
@@ -19,6 +15,10 @@ namespace ITI.DataAccessLibrary.Tests
         readonly string _fileName = "database.sqlite";
         readonly string _dbPath;
         Random _randomSource;
+
+        const int DEFAULT_HARBOR_COUNT = 10;
+        const int DEFAULT_SHIP_COUNT = 5;
+        const int DEFAULT_CONTAINER_COUNT = 100;
 
         List<Harbor> _harbors;
         List<ContainerShip> _containerShips;
@@ -58,7 +58,7 @@ namespace ITI.DataAccessLibrary.Tests
             }    
         }
 
-        void CreateHarbourTable(SQLiteConnection connexion,int count=30)
+        void CreateHarbourTable(SQLiteConnection connexion,int count= DEFAULT_HARBOR_COUNT)
         {
             using (SQLiteTransaction transaction = connexion.BeginTransaction())
             {
@@ -105,7 +105,7 @@ namespace ITI.DataAccessLibrary.Tests
             }
         }
 
-        void CreateShipTable(SQLiteConnection connexion, int count = 60)
+        void CreateShipTable(SQLiteConnection connexion, int count = DEFAULT_SHIP_COUNT)
         {
             if (Harbors.Count < 1) throw new InvalidOperationException();
 
@@ -161,9 +161,7 @@ namespace ITI.DataAccessLibrary.Tests
 
                         };
                         containerShip.MaxWeight = (int)(containerShip.MaxWidth * containerShip.MaxHeight * containerShip.MaxLength * _randomSource.NextDouble() * 10);
-
-                        //date : "yyyy-MM-dd HH:mm:ss.fff"
-
+                        
                         ContainerShips.Add(containerShip);
 
                         command.CommandText = "insert into Ship(ATISCode, Name,Origin,Destination,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxSpeed,MaxWidth,MaxHeight,MaxLength) values(" +
@@ -186,7 +184,7 @@ namespace ITI.DataAccessLibrary.Tests
                 transaction.Commit();
             }
         }
-        void CreateContainerTable(SQLiteConnection connexion, int count = 1000)
+        void CreateContainerTable(SQLiteConnection connexion, int count = DEFAULT_CONTAINER_COUNT)
         {
             if (Harbors.Count < 1 || ContainerShips.Count < 1) throw new InvalidOperationException();
 
@@ -244,7 +242,7 @@ namespace ITI.DataAccessLibrary.Tests
                         //insert to DB
                         command.CommandText = "insert into " +
                             "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,MaxWeigth,X,Y,Z) values(" +
-                            $"'{container.Reference}', " +
+                            $"'{container.Reference.Substring(0,8)}', " +
                             $"'{container.Content}', " +
                             $"{container.CurrentShip.Id}, " +
                             $"{container.Origin.Id}, " +
@@ -265,7 +263,6 @@ namespace ITI.DataAccessLibrary.Tests
         string GetRandomName()
         {
             return GenerateName(_randomSource.Next(5,10));
-            //return Guid.NewGuid().ToString();
         }
         public static string GenerateName(int len)
         {
@@ -285,9 +282,24 @@ namespace ITI.DataAccessLibrary.Tests
             }
             return Name.ToString();
         }
-        public string GetRandomContent()
+        public static string GetRandomContent()
         {
-            return "des trucs";
+            Random r = new Random();
+            switch (r.Next(0,11))
+            {
+                case 0: return "Wheat";
+                case 1: return "Playstation 4";
+                case 2: return "Vegetable";
+                case 3: return "Toys";
+                case 4: return "Metal plates";
+                case 5: return "Wood planks";
+                case 6: return "Electronic components";
+                case 8: return "Car components";
+                case 9: return "Cloths";
+                case 10: return "Books";
+                case 11: return "Scooters";
+                default: return "somethings";
+            }
         }
     }
 }

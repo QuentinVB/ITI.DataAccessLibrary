@@ -1,8 +1,8 @@
-using ITI.DataAccessLibrary.Correction;
-using ITI.DataAccessLibrary.Correction.Model;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using ITI.DataAccessLibrary;
+using ITI.DataAccessLibrary.Model;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -13,13 +13,14 @@ namespace ITI.DataAccessLibrary.Tests
         public void Setup()
         {
             generator = new DBGenerator();
+            generator.CreateDatabase();
         }
-
+        //TODO : Update Harbor
         [Test]
         public void t1_the_harbors_can_be_all_get()
         {
             //Arrange
-            generator.CreateDatabase();
+            
             HarborQueries sut = new HarborQueries();
 
             //Act
@@ -43,7 +44,6 @@ namespace ITI.DataAccessLibrary.Tests
         public void t2_getHarborByCountry()
         {
             //Arrange
-            generator.CreateDatabase();
             HarborQueries sut = new HarborQueries();
 
             //Act
@@ -63,7 +63,6 @@ namespace ITI.DataAccessLibrary.Tests
         public void t3_can_get_correct_harbor_by_id()
         {
             //Arrange
-            generator.CreateDatabase();
             HarborQueries sut = new HarborQueries();
 
             //Act
@@ -76,6 +75,8 @@ namespace ITI.DataAccessLibrary.Tests
             Assert.That(genData.Latitude, Is.EqualTo(data.Latitude).Within(0.00001));
             Assert.That(genData.Longitude, Is.EqualTo(data.Longitude).Within(0.00001));
         }
+
+        //TODO : test insert
     }
 }
 

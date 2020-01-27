@@ -1,8 +1,8 @@
-using ITI.DataAccessLibrary.Correction;
-using ITI.DataAccessLibrary.Correction.Model;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using ITI.DataAccessLibrary;
+using ITI.DataAccessLibrary.Model;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -13,13 +13,15 @@ namespace ITI.DataAccessLibrary.Tests
         public void Setup()
         {
             generator = new DBGenerator();
+            generator.CreateDatabase();
         }
+
+        //TODO : Create, Update, Delete Ship
 
         [Test]
         public void t1_getAllShips()
         {
             //Arrange
-            generator.CreateDatabase();
             ShipQueries sut = new ShipQueries();
 
             //Act
@@ -35,9 +37,7 @@ namespace ITI.DataAccessLibrary.Tests
             {
                 Assert.AreEqual(generator.ContainerShips[i].Name, data[i].Name);
             }
-
-        }
-        
+        } 
         [Test]
         public void t2_get_correct_ship_by_id()
         {
