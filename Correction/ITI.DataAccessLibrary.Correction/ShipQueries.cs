@@ -227,6 +227,21 @@ namespace ITI.DataAccessLibrary.Correction
                 $"{ship.MaxHeight}, " +
                 $"{ship.MaxSpeed}, " +
                 $")";
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                _connexion.Open();
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
 
         /// <summary>
@@ -237,15 +252,45 @@ namespace ITI.DataAccessLibrary.Correction
         {
             string query = $"DELETE FROM SHIP " +
                 $"WHERE {ship.ATISCode}";
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
 
         /// <summary>
         /// Update a ship's destination and arrival date
         /// </summary>
         /// <param name="ship"></param>
-        public void ChangeShipDestinationAndArrivalDate( ContainerShip ship )
+        public void UpdateShip( int id, string name )
         {
+            string query = $"UPDATE SHIP" +
+                $"SET NAME = '{name}'" +
+                $"WHERE ID = {id}";
 
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
 
 
