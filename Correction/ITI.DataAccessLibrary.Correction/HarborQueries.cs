@@ -152,5 +152,30 @@ namespace ITI.DataAccessLibrary.Correction
                 _connexion.Close();
             }
         }
+
+        public void DeleteHarbor( Harbor harbor )
+        {
+            string query = $"DELETE FROM SHIP" +
+                $"WHERE {harbor.Id}";
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
+        }
+
+        public void UpdateHarbor( )
+        {
+
+        }
     }
 }

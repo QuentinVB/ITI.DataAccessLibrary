@@ -240,7 +240,7 @@ namespace ITI.DataAccessLibrary.Correction
         }
 
         /// <summary>
-        /// Update a ship's destination nd arrival date
+        /// Update a ship's destination and arrival date
         /// </summary>
         /// <param name="ship"></param>
         public void ChangeShipDestinationAndArrivalDate( ContainerShip ship )
