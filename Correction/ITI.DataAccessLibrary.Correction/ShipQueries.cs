@@ -213,6 +213,7 @@ namespace ITI.DataAccessLibrary.Correction
         public void InsertShip( ContainerShip ship )
         {
             string query = $"INSERT INTO SHIP values(" +
+                $"{ship.Id}, "+
                 $"{ship.ATISCode}, " +
                 $"{ship.Name}, " +
                 $"{ship.Destination}, " +

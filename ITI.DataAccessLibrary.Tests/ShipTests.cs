@@ -73,6 +73,24 @@ namespace ITI.DataAccessLibrary.Tests
                 Assert.AreEqual(sortgen[i].Crew, data[i].Crew);
             }
         }
+
+        //[Test]
+        //public void t4_insert_harbor_do_insert_harbor()
+        //{
+        //    //Arrange
+        //    generator.CreateDatabase();
+        //    ShipQueries sut = new ShipQueries();
+
+        //    //Act
+        //    ContainerShip testShip = new ContainerShip()
+        //    {
+        //        Id = 61,
+        //        ATISCode = 
+        //    };
+
+        //    //Assert
+
+        //}
     }
 }
 
