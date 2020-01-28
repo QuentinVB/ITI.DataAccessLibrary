@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ITI.DataAccessLibrary\ITI.DataAccessLibrary.csproj" />
+    <ProjectReference Include="..\Correction\ITI.DataAccessLibrary.Correction\ITI.DataAccessLibrary.Correction.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ITI.DataAccessLibrary.Model;
+using ITI.DataAccessLibrary.Correction.Model;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -16,9 +16,9 @@ namespace ITI.DataAccessLibrary.Tests
         readonly string _dbPath;
         Random _randomSource;
 
-        const int DEFAULT_HARBOR_COUNT = 10;
-        const int DEFAULT_SHIP_COUNT = 5;
-        const int DEFAULT_CONTAINER_COUNT = 100;
+        public const int DEFAULT_HARBOR_COUNT = 10;
+        public const int DEFAULT_SHIP_COUNT = 5;
+        public const int DEFAULT_CONTAINER_COUNT = 100;
 
         List<Harbor> _harbors;
         List<ContainerShip> _containerShips;
@@ -203,7 +203,7 @@ namespace ITI.DataAccessLibrary.Tests
                                         "Destination int," +
                                         "IsOpenTop int," +
                                         "EmptyWeigth int," +
-                                        "MaxWeigth int," +
+                                        "LoadWeigth int," +
                                         "X int," +
                                         "Y int," +
                                         "Z int" +
@@ -233,7 +233,7 @@ namespace ITI.DataAccessLibrary.Tests
                             Y = _randomSource.Next(0, currentShip.MaxHeight),
                             Z = _randomSource.Next(0, currentShip.MaxLength),
                         };
-                        container.MaxWeigth = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
+                        container.LoadWeigth = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
 
                         //TODO : Be consistent and store the container at real place on ships (not randomly)
 
@@ -241,7 +241,7 @@ namespace ITI.DataAccessLibrary.Tests
 
                         //insert to DB
                         command.CommandText = "insert into " +
-                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,MaxWeigth,X,Y,Z) values(" +
+                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,LoadWeigth,X,Y,Z) values(" +
                             $"'{container.Reference.Substring(0,8)}', " +
                             $"'{container.Content}', " +
                             $"{container.CurrentShip.Id}, " +
@@ -249,7 +249,7 @@ namespace ITI.DataAccessLibrary.Tests
                             $"{container.Destination.Id}, " +
                             $"{(container.IsOpenTop? 1 : 0 )}," +
                             $"{container.EmptyWeigth}," +
-                            $"{container.MaxWeigth}, " +
+                            $"{container.LoadWeigth}, " +
                             $"{container.X}, " +
                             $"{container.Y}, " +
                             $"{container.Z} " +
