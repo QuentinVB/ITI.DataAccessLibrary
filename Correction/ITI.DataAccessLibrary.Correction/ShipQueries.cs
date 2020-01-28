@@ -248,6 +248,15 @@ namespace ITI.DataAccessLibrary.Correction
 
         }
 
+        /// <summary>
+        /// Get the all the ship redux form
+        /// </summary>
+        /// <returns></returns>
+        public List<ContainerShipRedux> GetAllShipsRedux()
+        {
+            return new List<ContainerShipRedux>();
+            //throw new NotImplementedException();
+        }
 
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="HarborQueries.cs" />
     <Compile Include="Model\Container.cs" />
     <Compile Include="Model\ContainerShip.cs" />
+    <Compile Include="Model\ContainerShipRedux.cs" />
     <Compile Include="Model\Harbor.cs" />
     <Compile Include="Queries.cs" />
     <Compile Include="ShipQueries.cs" />
