@@ -29,7 +29,6 @@ namespace ITI.DataAccessLibrary.Tests
             List<ContainerShipRedux> data = sut.GetAllShipsRedux();
 
             //Assert
-
             var genGroupedContainers =
                 from c in generator.Containers
                 group c by c.CurrentShip.Id into grouping
@@ -70,7 +69,7 @@ namespace ITI.DataAccessLibrary.Tests
             foreach (var item in genGroupedContainers)
             {
                 Assert.AreEqual(
-                    data.Where(sr => sr.Id == item.ShipId).First().WeightLoad,
+                    data.Where(sr => sr.Id == item.ShipId).First().TotalWeightLoad,
                     item.WeightSum);
             }
         }        

@@ -254,7 +254,42 @@ namespace ITI.DataAccessLibrary.Correction
         /// <returns></returns>
         public List<ContainerShipRedux> GetAllShipsRedux()
         {
-            return new List<ContainerShipRedux>();
+            string query = "SELECT Id,ATISCode,Name,Crew, c.ContainerCount as ContainerCount, c.TotalWeightLoad as TotalWeightLoad " +
+                "FROM (" +
+                    "SELECT CurrentShip, COUNT(Id) as ContainerCount, SUM(LoadWeigth) as TotalWeightLoad " +
+                    "FROM Container " +
+                    "GROUP BY CurrentShip) c , " +
+                    "Ship s " +
+                "WHERE c.CurrentShip = s.Id"; 
+
+            List<ContainerShipRedux> result = new List<ContainerShipRedux>();
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                _connexion.Open();
+                using (SQLiteCommand command = _connexion.CreateCommand())
+                {
+                    command.CommandText = query;
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ContainerShipRedux ship = new ContainerShipRedux
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                ATISCode = reader["ATISCode"].ToString(),
+                                Crew = Convert.ToInt32(reader["Crew"]),
+                                ContainerCount = Convert.ToInt32(reader["ContainerCount"]),
+                                TotalWeightLoad = Convert.ToInt32(reader["TotalWeightLoad"])
+                            };
+                            result.Add(ship);
+                        }
+                    }
+                }
+                _connexion.Close();
+            }
+            return result;
             //throw new NotImplementedException();
         }
 

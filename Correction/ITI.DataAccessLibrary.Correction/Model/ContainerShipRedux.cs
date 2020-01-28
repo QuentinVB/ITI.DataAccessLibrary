@@ -10,6 +10,6 @@ namespace ITI.DataAccessLibrary.Correction.Model
         public string Name { get; set; }
         public int Crew { get; set; }
         public int ContainerCount { get; set; }
-        public int WeightLoad { get; set; }
+        public int TotalWeightLoad { get; set; }
     }
 }
