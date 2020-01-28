@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ITI.DataAccessLibrary.Model;
+using ITI.DataAccessLibrary.Correction.Model;
 
 namespace ITI.DataAccessLibrary.Tests
 {

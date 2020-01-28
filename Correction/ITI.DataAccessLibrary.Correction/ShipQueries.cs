@@ -136,8 +136,8 @@ namespace ITI.DataAccessLibrary.Correction
                             result.Name = reader["Name"].ToString();
                             result.Origin = harborQueries.GetHarborById(Convert.ToInt32(reader["Origin"]));
                             result.Destination = harborQueries.GetHarborById(Convert.ToInt32(reader["Destination"]));
-                            result.DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString());
-                            result.ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString());
+                            result.DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString("yyyy/MM/dd"));
+                            result.ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString("yyyy/MM/dd"));
                             result.Crew = Convert.ToInt32(reader["Crew"]);
                             result.MaxWeight = Convert.ToInt32(reader["MaxWeight"]);
                             result.MaxSpeed = Convert.ToDouble(reader["MaxSpeed"]);
@@ -212,22 +212,23 @@ namespace ITI.DataAccessLibrary.Correction
         /// <param name="ship"></param>
         public void InsertShip( ContainerShip ship )
         {
-            string query = $"INSERT INTO SHIP values(" +
+            string query = $"INSERT INTO SHIP"+
+                $"(Id,Name,ATISCode,Origin,Destination,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxSpeed,MaxWidth,MaxHeight,MaxLength) "+
+                $"VALUES(" +
                 $"{ship.Id}, "+
-                $"{ship.ATISCode}, " +
-                $"{ship.Name}, " +
-                $"{ship.Destination}, " +
-                $"{ship.Origin}, " +
-                $"{ship.Cargo}, " +
-                $"{ship.DepartureTime}, " +
-                $"{ship.ArrivalTime}, " +
+                $"'"+ship.Name+"', " +
+                $"'"+ship.ATISCode + "', " +
+                $"{ship.Origin.Id}, " +
+                $"{ship.Destination.Id}, " +
+                $"{ship.DepartureTime.ToString("yyyy/MM/dd")}, " +
+                $"{ship.ArrivalTime.ToString("yyyy/MM/dd")}, " +
                 $"{ship.Crew}, " +
                 $"{ship.MaxWeight}, "+
                 $"{ship.MaxWidth}, " +
                 $"{ship.MaxLength}, " +
                 $"{ship.MaxHeight}, " +
-                $"{ship.MaxSpeed}, " +
-                $")";
+                $"{ship.MaxSpeed}" +
+                $");";
 
             using (_connexion = new SQLiteConnection(_connString))
             {
