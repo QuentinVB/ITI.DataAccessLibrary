@@ -27,6 +27,7 @@ namespace ITI.DataAccessLibrary.Tests
         public List<Harbor> Harbors { get => _harbors; private set => _harbors = value; }
         public List<ContainerShip> ContainerShips { get => _containerShips; private set => _containerShips = value; }
         public List<Container> Containers { get => _containers; set => _containers = value; }
+        public Random RandomSource { get => _randomSource; set => _randomSource = value; }
 
         public DBGenerator()
         {
@@ -203,7 +204,7 @@ namespace ITI.DataAccessLibrary.Tests
                                         "Destination int," +
                                         "IsOpenTop int," +
                                         "EmptyWeigth int," +
-                                        "LoadWeigth int," +
+                                        "Weight int," +
                                         "X int," +
                                         "Y int," +
                                         "Z int" +
@@ -222,7 +223,7 @@ namespace ITI.DataAccessLibrary.Tests
                         container = new Container()
                         {
                             Id = i,
-                            Reference = Guid.NewGuid().ToString(),
+                            Reference = Guid.NewGuid().ToString().Substring(0, 8),
                             Content = GetRandomContent(),
                             CurrentShip=currentShip,
                             Origin = currentShip.Origin,
@@ -233,7 +234,7 @@ namespace ITI.DataAccessLibrary.Tests
                             Y = _randomSource.Next(0, currentShip.MaxHeight),
                             Z = _randomSource.Next(0, currentShip.MaxLength),
                         };
-                        container.LoadWeigth = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
+                        container.Weight = (int)(container.EmptyWeigth + _randomSource.NextDouble() * 100);
 
                         //TODO : Be consistent and store the container at real place on ships (not randomly)
 
@@ -241,7 +242,7 @@ namespace ITI.DataAccessLibrary.Tests
 
                         //insert to DB
                         command.CommandText = "insert into " +
-                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,LoadWeigth,X,Y,Z) values(" +
+                            "Container(Reference,Content,CurrentShip,Origin,Destination,IsOpenTop,EmptyWeigth,Weight,X,Y,Z) values(" +
                             $"'{container.Reference.Substring(0,8)}', " +
                             $"'{container.Content}', " +
                             $"{container.CurrentShip.Id}, " +
@@ -249,7 +250,7 @@ namespace ITI.DataAccessLibrary.Tests
                             $"{container.Destination.Id}, " +
                             $"{(container.IsOpenTop? 1 : 0 )}," +
                             $"{container.EmptyWeigth}," +
-                            $"{container.LoadWeigth}, " +
+                            $"{container.Weight}, " +
                             $"{container.X}, " +
                             $"{container.Y}, " +
                             $"{container.Z} " +

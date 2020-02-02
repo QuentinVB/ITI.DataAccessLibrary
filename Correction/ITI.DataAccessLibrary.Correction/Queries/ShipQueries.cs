@@ -254,13 +254,13 @@ namespace ITI.DataAccessLibrary.Correction
         /// <returns></returns>
         public List<ContainerShipRedux> GetAllShipsRedux()
         {
-            string query = "SELECT Id,ATISCode,Name,Crew, c.ContainerCount as ContainerCount, c.TotalWeightLoad as TotalWeightLoad " +
-                "FROM (" +
-                    "SELECT CurrentShip, COUNT(Id) as ContainerCount, SUM(LoadWeigth) as TotalWeightLoad " +
-                    "FROM Container " +
-                    "GROUP BY CurrentShip) c , " +
-                    "Ship s " +
-                "WHERE c.CurrentShip = s.Id"; 
+            string query = @"SELECT Id,ATISCode,Name,Crew, c.ContainerCount as ContainerCount, c.TotalWeight as TotalWeight
+                FROM (
+                    SELECT CurrentShip, COUNT(Id) as ContainerCount, SUM(Weight) as TotalWeight
+                    FROM Container 
+                    GROUP BY CurrentShip) c , 
+                    Ship s 
+                WHERE c.CurrentShip = s.Id"; 
 
             List<ContainerShipRedux> result = new List<ContainerShipRedux>();
 
@@ -281,7 +281,7 @@ namespace ITI.DataAccessLibrary.Correction
                                 ATISCode = reader["ATISCode"].ToString(),
                                 Crew = Convert.ToInt32(reader["Crew"]),
                                 ContainerCount = Convert.ToInt32(reader["ContainerCount"]),
-                                TotalWeightLoad = Convert.ToInt32(reader["TotalWeightLoad"])
+                                TotalWeight = Convert.ToInt32(reader["TotalWeight"])
                             };
                             result.Add(ship);
                         }

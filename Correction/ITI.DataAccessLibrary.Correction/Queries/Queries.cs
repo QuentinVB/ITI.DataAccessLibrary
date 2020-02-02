@@ -7,7 +7,7 @@ using System.Data.SQLite;
 
 namespace ITI.DataAccessLibrary.Correction
 {
-    public class Queries
+    public abstract class Queries
     {
         readonly string _path;
         readonly string _fileName = "database.sqlite";

@@ -19,7 +19,7 @@ namespace ITI.DataAccessLibrary.Tests
         //TODO : Create, Update, Delete Ship
 
         [Test]
-        public void t1_getAllShips()
+        public void t1_get_All_Ships()
         {
             //Arrange
             ShipQueries sut = new ShipQueries();

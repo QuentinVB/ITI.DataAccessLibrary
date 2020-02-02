@@ -17,10 +17,11 @@ namespace ITI.DataAccessLibrary.Tests
             generator.CreateDatabase();
         }
 
-        //TODO : Create, Update, Delete Ship redux
-
+        /// <summary>
+        /// test if the GetAllShipsRedux method return the correct container count for each ship
+        /// </summary>
         [Test]
-        public void t1_getAllShipReduxWithContainerCount()
+        public void t1_get_All_Ship_Redux_With_correct_Container_Count()
         {
             //Arrange
             ShipQueries sut = new ShipQueries();
@@ -46,8 +47,12 @@ namespace ITI.DataAccessLibrary.Tests
                     item.ContainerCount);
             }
         }
+
+        /// <summary>
+        /// test if the GetAllShipsRedux method return the correct weight sum for each ship
+        /// </summary>
         [Test]
-        public void t2_getAllShipReduxWithWeightLoad()
+        public void t2_get_All_Ship_Redux_With_Weight_Load()
         {
             //Arrange
             ShipQueries sut = new ShipQueries();
@@ -63,13 +68,13 @@ namespace ITI.DataAccessLibrary.Tests
                 {
                     ShipId = grouping.Key,
                     //ContainerCount = c.Count(),
-                    WeightSum = grouping.Sum(s => s.LoadWeigth),
+                    WeightSum = grouping.Sum(s => s.Weight),
                 };
             
             foreach (var item in genGroupedContainers)
             {
                 Assert.AreEqual(
-                    data.Where(sr => sr.Id == item.ShipId).First().TotalWeightLoad,
+                    data.Where(sr => sr.Id == item.ShipId).First().TotalWeight,
                     item.WeightSum);
             }
         }        

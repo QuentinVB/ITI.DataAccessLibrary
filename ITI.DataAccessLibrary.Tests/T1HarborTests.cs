@@ -16,6 +16,10 @@ namespace ITI.DataAccessLibrary.Tests
             generator.CreateDatabase();
         }
         //TODO : Update Harbor
+
+        /// <summary>
+        /// test if the GetAllHarbor method return all the harbors
+        /// </summary>
         [Test]
         public void t1_the_harbors_can_be_all_get()
         {
@@ -39,9 +43,11 @@ namespace ITI.DataAccessLibrary.Tests
                 Assert.That(generator.Harbors[i].Longitude, Is.EqualTo(data[i].Longitude).Within(0.00001));
             }
         }
-
+        /// <summary>
+        /// test if the GetHarborByCountry method return the harbors of a specific country
+        /// </summary>
         [Test]
-        public void t2_getHarborByCountry()
+        public void t2_get_Harbor_By_Country()
         {
             //Arrange
             HarborQueries sut = new HarborQueries();
@@ -59,6 +65,9 @@ namespace ITI.DataAccessLibrary.Tests
             }       
         }
 
+        /// <summary>
+        /// test if the GetHarborById method return the specific harbor
+        /// </summary>
         [Test]
         public void t3_can_get_correct_harbor_by_id()
         {
