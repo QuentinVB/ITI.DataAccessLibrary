@@ -25,6 +25,8 @@ namespace ITI.DataAccessLibrary
             throw new NotImplementedException();
         }
 
+       
+
         /// <summary>
         /// Return a ship by it's Id
         /// </summary>
@@ -77,6 +79,14 @@ namespace ITI.DataAccessLibrary
         /// </summary>
         /// <param name="ship"></param>
         public void DeleteShip( int id )
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Get the all the ship redux form
+        /// </summary>
+        /// <returns></returns>
+        public List<ContainerShipRedux> GetAllShipsRedux()
         {
             throw new NotImplementedException();
         }

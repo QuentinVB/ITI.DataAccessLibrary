@@ -1,8 +1,8 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using ITI.DataAccessLibrary;
-using ITI.DataAccessLibrary.Model;
+using ITI.DataAccessLibrary.Correction.Model;
+using ITI.DataAccessLibrary.Correction;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -19,7 +19,7 @@ namespace ITI.DataAccessLibrary.Tests
         //TODO : Create, Update, Delete Ship
 
         [Test]
-        public void t1_getAllShips()
+        public void t1_get_All_Ships()
         {
             //Arrange
             ShipQueries sut = new ShipQueries();
