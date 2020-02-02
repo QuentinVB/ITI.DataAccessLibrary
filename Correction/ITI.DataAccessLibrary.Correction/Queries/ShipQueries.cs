@@ -136,8 +136,8 @@ namespace ITI.DataAccessLibrary.Correction
                             result.Name = reader["Name"].ToString();
                             result.Origin = harborQueries.GetHarborById(Convert.ToInt32(reader["Origin"]));
                             result.Destination = harborQueries.GetHarborById(Convert.ToInt32(reader["Destination"]));
-                            result.DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString());
-                            result.ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString());
+                            result.DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString("yyyy/MM/dd"));
+                            result.ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString("yyyy/MM/dd"));
                             result.Crew = Convert.ToInt32(reader["Crew"]);
                             result.MaxWeight = Convert.ToInt32(reader["MaxWeight"]);
                             result.MaxSpeed = Convert.ToDouble(reader["MaxSpeed"]);
@@ -212,21 +212,38 @@ namespace ITI.DataAccessLibrary.Correction
         /// <param name="ship"></param>
         public void InsertShip( ContainerShip ship )
         {
-            string query = $"INSERT INTO SHIP values(" +
-                $"{ship.ATISCode}, " +
-                $"{ship.Name}, " +
-                $"{ship.Destination}, " +
-                $"{ship.Origin}, " +
-                $"{ship.Cargo}, " +
-                $"{ship.DepartureTime}, " +
-                $"{ship.ArrivalTime}, " +
+            string query = $"INSERT INTO SHIP"+
+                $"(Id,Name,ATISCode,Origin,Destination,DepartureTime,ArrivalTime,Crew,MaxWeight,MaxSpeed,MaxWidth,MaxHeight,MaxLength) "+
+                $"VALUES(" +
+                $"{ship.Id}, "+
+                $"'"+ship.Name+"', " +
+                $"'"+ship.ATISCode + "', " +
+                $"{ship.Origin.Id}, " +
+                $"{ship.Destination.Id}, " +
+                $"{ship.DepartureTime.ToString("yyyy/MM/dd")}, " +
+                $"{ship.ArrivalTime.ToString("yyyy/MM/dd")}, " +
                 $"{ship.Crew}, " +
                 $"{ship.MaxWeight}, "+
                 $"{ship.MaxWidth}, " +
                 $"{ship.MaxLength}, " +
                 $"{ship.MaxHeight}, " +
-                $"{ship.MaxSpeed}, " +
-                $")";
+                $"{ship.MaxSpeed}" +
+                $");";
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                _connexion.Open();
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
 
         /// <summary>
@@ -237,15 +254,45 @@ namespace ITI.DataAccessLibrary.Correction
         {
             string query = $"DELETE FROM SHIP " +
                 $"WHERE {ship.ATISCode}";
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
 
         /// <summary>
         /// Update a ship's destination and arrival date
         /// </summary>
         /// <param name="ship"></param>
-        public void ChangeShipDestinationAndArrivalDate( ContainerShip ship )
+        public void UpdateShip( int id, string name )
         {
+            string query = $"UPDATE SHIP" +
+                $"SET NAME = '{name}'" +
+                $"WHERE ID = {id}";
 
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
 
         /// <summary>

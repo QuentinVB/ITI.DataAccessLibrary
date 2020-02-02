@@ -173,10 +173,25 @@ namespace ITI.DataAccessLibrary.Correction
             }
         }
 
-        public void UpdateHarbor( )
+        public void UpdateHarbor( int id, string country )
         {
             string query = $"UPDATE HARBOR" +
-                $"SET";
+                $"SET COUNTRY = '{country}'" +
+                $"WHERE ID = {id}";
+
+            using (_connexion = new SQLiteConnection(_connString))
+            {
+                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                {
+                    using (SQLiteCommand command = _connexion.CreateCommand())
+                    {
+                        command.CommandText = query;
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                _connexion.Close();
+            }
         }
     }
 }
