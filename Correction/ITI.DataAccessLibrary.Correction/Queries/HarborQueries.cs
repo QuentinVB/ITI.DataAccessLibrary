@@ -1,4 +1,4 @@
-﻿using ITI.DataAccessLibrary.Correction.Model;
+﻿using ITI.DataAccessLibrary.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ITI.DataAccessLibrary.Correction
+namespace ITI.DataAccessLibrary
 {
     public class HarborQueries : Queries
     {

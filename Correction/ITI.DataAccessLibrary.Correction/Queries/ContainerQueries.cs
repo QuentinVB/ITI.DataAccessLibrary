@@ -4,9 +4,9 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ITI.DataAccessLibrary.Correction.Model;
+using ITI.DataAccessLibrary.Model;
 
-namespace ITI.DataAccessLibrary.Correction
+namespace ITI.DataAccessLibrary
 {
     public class ContainerQueries : Queries
     {

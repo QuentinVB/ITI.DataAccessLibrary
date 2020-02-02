@@ -10,6 +10,10 @@ http://www.permisbateauonline.com/permis-fluvial/tutoriaux/code-ATIS-des-equipem
 https://www.itu.int/en/ITU-R/terrestrial/fmd/Pages/mid.aspx
 https://fr.wikipedia.org/wiki/Maritime_Mobile_Service_Identity
 
-## Evolutions
+## Evolutions de tests
 
 - On peut connaitre le nombre de port par pays
+- On peut créer des ports.
+- On peut récupérer tous les bateaux triés par capacité
+- On peut récupérer tous les bateaux qui sont vides
+- On peut récupérer tous les bateaux qui transportent un contenu spécifique

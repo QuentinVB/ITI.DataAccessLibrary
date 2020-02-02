@@ -1,8 +1,9 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using ITI.DataAccessLibrary.Correction;
-using ITI.DataAccessLibrary.Correction.Model;
+using ITI.DataAccessLibrary;
+using ITI.DataAccessLibrary.Model;
+using System;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -14,6 +15,9 @@ namespace ITI.DataAccessLibrary.Tests
         {
             generator = new DBGenerator();
             generator.CreateDatabase();
+
+
+            
         }
 
         //TODO : Create, Update, Delete Ship
@@ -50,8 +54,18 @@ namespace ITI.DataAccessLibrary.Tests
 
             //Assert
             Assert.AreEqual(genData.Id, data.Id);
+            Assert.AreEqual(genData.ATISCode, data.ATISCode);
             Assert.AreEqual(genData.Name, data.Name);
+            Assert.AreEqual(genData.DepartureTime, data.DepartureTime);
+            Assert.AreEqual(genData.ArrivalTime, data.ArrivalTime);
             Assert.AreEqual(genData.Crew, data.Crew);
+            Assert.AreEqual(genData.MaxHeight, data.MaxHeight);
+            Assert.AreEqual(genData.MaxLength, data.MaxLength);
+
+            Assert.That(genData.MaxSpeed, Is.EqualTo(data.MaxSpeed).Within(0.001));
+
+            Assert.AreEqual(genData.MaxWeight, data.MaxWeight);
+            Assert.AreEqual(genData.MaxWidth, data.MaxWidth);
         }
 
         [Test]
@@ -73,7 +87,7 @@ namespace ITI.DataAccessLibrary.Tests
         }
 
         [Test]
-        public void t4_insert_harbor_do_insert_harbor()
+        public void t4_insert_ship()
         {
             //Arrange
             ShipQueries sut = new ShipQueries();
@@ -84,7 +98,7 @@ namespace ITI.DataAccessLibrary.Tests
                 Name = "dsfdsfv",
                 Origin = new Harbor() { Id = 100 },
                 Destination = new Harbor() { Id = 101 },
-                DepartureTime = new System.DateTime(1992,08,12),
+                DepartureTime = new System.DateTime(1992, 08, 12),
                 ArrivalTime = new System.DateTime(1992, 08, 12),
                 Cargo = new List<Container>(),
                 Crew = 6,
@@ -97,11 +111,59 @@ namespace ITI.DataAccessLibrary.Tests
 
             //Act
             sut.InsertShip(testShip);
-            var control = sut.GetShipById(61);
+            var control = sut.GetShipById(testShip.Id);
 
             //Assert
             Assert.NotNull(control);
-            Assert.AreSame(testShip, control);
+            Assert.AreEqual(testShip.Id, control.Id);
+            Assert.AreEqual(testShip.ATISCode, control.ATISCode);
+            Assert.AreEqual(testShip.Name, control.Name);
+            Assert.AreEqual(testShip.DepartureTime, control.DepartureTime);
+            Assert.AreEqual(testShip.ArrivalTime, control.ArrivalTime);
+            Assert.AreEqual(testShip.Crew, control.Crew);
+            Assert.AreEqual(testShip.MaxHeight, control.MaxHeight);
+            Assert.AreEqual(testShip.MaxLength, control.MaxLength);
+            Assert.That(testShip.MaxSpeed, Is.EqualTo(control.MaxSpeed).Within(0.001));
+            Assert.AreEqual(testShip.MaxWeight, control.MaxWeight);
+            Assert.AreEqual(testShip.MaxWidth, control.MaxWidth);
+        }
+
+
+
+        [Test]
+        public void t5_delete_ship()
+        {
+
+            //Arrange
+            ContainerShip testShip = new ContainerShip()
+            {
+                Id = 50,
+                ATISCode = Guid.NewGuid().ToString(),
+                Name = generator.GetRandomName(),
+                Origin = new Harbor() { Id = 100 },
+                Destination = new Harbor() { Id = 101 },
+                DepartureTime = new System.DateTime(1992, 08, 12),
+                ArrivalTime = new System.DateTime(1992, 08, 12),
+                Cargo = new List<Container>(),
+                Crew = 6,
+                MaxHeight = 30,
+                MaxLength = 220,
+                MaxSpeed = 20,
+                MaxWeight = 33000,
+                MaxWidth = 20
+            };
+            ShipQueries sut = new ShipQueries();          
+
+            //Act
+            sut.InsertShip(testShip);
+
+            sut.DeleteShip(testShip);
+
+            var control = sut.GetShipById(testShip.Id);
+
+            //Assert
+            Assert.Null(control);
+           
         }
     }
 }

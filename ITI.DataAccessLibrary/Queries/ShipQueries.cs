@@ -75,10 +75,10 @@ namespace ITI.DataAccessLibrary
         }
 
         /// <summary>
-        /// Delete  ship of  given Id
+        /// Delete the given ship
         /// </summary>
         /// <param name="ship"></param>
-        public void DeleteShip( int id )
+        public void DeleteShip( ContainerShip ship)
         {
             throw new NotImplementedException();
         }

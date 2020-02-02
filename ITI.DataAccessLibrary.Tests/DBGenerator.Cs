@@ -5,7 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ITI.DataAccessLibrary.Correction.Model;
+using ITI.DataAccessLibrary.Model;
 
 namespace ITI.DataAccessLibrary.Tests
 {
@@ -261,7 +261,7 @@ namespace ITI.DataAccessLibrary.Tests
                 transaction.Commit();
             }
         }
-        string GetRandomName()
+        public string GetRandomName()
         {
             return GenerateName(_randomSource.Next(5,10));
         }
@@ -286,7 +286,7 @@ namespace ITI.DataAccessLibrary.Tests
         public static string GetRandomContent()
         {
             Random r = new Random();
-            switch (r.Next(0,11))
+            switch (r.Next(0,12))
             {
                 case 0: return "Wheat";
                 case 1: return "Playstation 4";
@@ -299,6 +299,7 @@ namespace ITI.DataAccessLibrary.Tests
                 case 9: return "Cloths";
                 case 10: return "Books";
                 case 11: return "Scooters";
+                case 12: return "Ponies"; //<-srsly ?
                 default: return "somethings";
             }
         }

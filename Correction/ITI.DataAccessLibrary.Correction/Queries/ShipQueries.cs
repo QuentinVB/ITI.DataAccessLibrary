@@ -4,9 +4,9 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ITI.DataAccessLibrary.Correction.Model;
+using ITI.DataAccessLibrary.Model;
 
-namespace ITI.DataAccessLibrary.Correction
+namespace ITI.DataAccessLibrary
 {
     public class ShipQueries : Queries
     {
@@ -119,7 +119,7 @@ namespace ITI.DataAccessLibrary.Correction
                 "FROM SHIP S " +
                 $"WHERE S.ID = {id}";
 
-            ContainerShip result = new ContainerShip();
+            ContainerShip result=null;
 
             using (_connexion = new SQLiteConnection(_connString))
             {
@@ -129,15 +129,17 @@ namespace ITI.DataAccessLibrary.Correction
                     command.CommandText = query;
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
+                        
                         while (reader.Read())
                         {
+                            result = new ContainerShip();
                             result.Id = Convert.ToInt32(reader["Id"]);
                             result.ATISCode = reader["ATISCode"].ToString();
                             result.Name = reader["Name"].ToString();
                             result.Origin = harborQueries.GetHarborById(Convert.ToInt32(reader["Origin"]));
                             result.Destination = harborQueries.GetHarborById(Convert.ToInt32(reader["Destination"]));
-                            result.DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString("yyyy/MM/dd"));
-                            result.ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString("yyyy/MM/dd"));
+                            result.DepartureTime = DateTime.Parse(reader["DepartureTime"].ToString());
+                            result.ArrivalTime = DateTime.Parse(reader["ArrivalTime"].ToString());
                             result.Crew = Convert.ToInt32(reader["Crew"]);
                             result.MaxWeight = Convert.ToInt32(reader["MaxWeight"]);
                             result.MaxSpeed = Convert.ToDouble(reader["MaxSpeed"]);
@@ -220,14 +222,14 @@ namespace ITI.DataAccessLibrary.Correction
                 $"'"+ship.ATISCode + "', " +
                 $"{ship.Origin.Id}, " +
                 $"{ship.Destination.Id}, " +
-                $"{ship.DepartureTime.ToString("yyyy/MM/dd")}, " +
-                $"{ship.ArrivalTime.ToString("yyyy/MM/dd")}, " +
+                $"'{ship.DepartureTime.ToString("yyyy-MM-dd HH:mm:ss.fff")}', " +
+                $"'{ship.ArrivalTime.ToString("yyyy-MM-dd HH:mm:ss.fff")}', " +
                 $"{ship.Crew}, " +
                 $"{ship.MaxWeight}, "+
+                $"{ship.MaxSpeed}, " +
                 $"{ship.MaxWidth}, " +
-                $"{ship.MaxLength}, " +
                 $"{ship.MaxHeight}, " +
-                $"{ship.MaxSpeed}" +
+                $"{ship.MaxLength}" +
                 $");";
 
             using (_connexion = new SQLiteConnection(_connString))
@@ -247,25 +249,23 @@ namespace ITI.DataAccessLibrary.Correction
         }
 
         /// <summary>
-        /// Delete  ship of  given Id
+        /// Delete the given ship
         /// </summary>
         /// <param name="ship"></param>
         public void DeleteShip( ContainerShip ship )
         {
             string query = $"DELETE FROM SHIP " +
-                $"WHERE {ship.ATISCode}";
+                $"WHERE ATISCode = '{ship.ATISCode}' ";
 
             using (_connexion = new SQLiteConnection(_connString))
             {
-                using (SQLiteTransaction transaction = _connexion.BeginTransaction())
+                _connexion.Open();
+                using (SQLiteCommand command = _connexion.CreateCommand())
                 {
-                    using (SQLiteCommand command = _connexion.CreateCommand())
-                    {
-                        command.CommandText = query;
-                        command.ExecuteNonQuery();
-                    }
-                    transaction.Commit();
-                }
+                    command.CommandText = query;
+                    command.ExecuteNonQuery();
+                }       
+                
                 _connexion.Close();
             }
         }
@@ -274,7 +274,7 @@ namespace ITI.DataAccessLibrary.Correction
         /// Update a ship's destination and arrival date
         /// </summary>
         /// <param name="ship"></param>
-        public void UpdateShip( int id, string name )
+        public void UpdateShipName( int id, string name )
         {
             string query = $"UPDATE SHIP" +
                 $"SET NAME = '{name}'" +

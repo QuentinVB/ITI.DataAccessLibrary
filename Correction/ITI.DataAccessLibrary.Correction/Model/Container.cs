@@ -1,4 +1,4 @@
-﻿namespace ITI.DataAccessLibrary.Correction.Model
+﻿namespace ITI.DataAccessLibrary.Model
 {
     public class Container
     {

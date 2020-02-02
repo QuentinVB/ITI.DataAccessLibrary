@@ -19,5 +19,7 @@ namespace ITI.DataAccessLibrary.Model
         public int MaxWidth { get; set; }
         public int MaxLength { get; set; }
         public int MaxHeight { get; set; }
+
+        
     }
 }

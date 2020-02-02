@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MerchandiseSummary.cs" />
+    <Compile Include="Queries\ContainerQueries.cs" />
     <Compile Include="Queries\HarborQueries.cs" />
     <Compile Include="Model\Container.cs" />
     <Compile Include="Model\ContainerShipRedux.cs" />

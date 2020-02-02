@@ -7,7 +7,7 @@
     <ProjectGuid>{D164D6D3-A56C-41DC-A81A-AFF79757B334}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ITI.DataAccessLibrary.Correction</RootNamespace>
+    <RootNamespace>ITI.DataAccessLibrary</RootNamespace>
     <AssemblyName>ITI.DataAccessLibrary.Correction</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

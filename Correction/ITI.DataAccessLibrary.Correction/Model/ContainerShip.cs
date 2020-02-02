@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ITI.DataAccessLibrary.Correction.Model
+namespace ITI.DataAccessLibrary.Model
 {
     public class ContainerShip
     {
@@ -19,5 +19,7 @@ namespace ITI.DataAccessLibrary.Correction.Model
         public int MaxWidth { get; set; }
         public int MaxLength { get; set; }
         public int MaxHeight { get; set; }
+
+       
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 
-namespace ITI.DataAccessLibrary.Correction
+namespace ITI.DataAccessLibrary
 {
     public abstract class Queries
     {
